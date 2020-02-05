@@ -11,7 +11,7 @@
 
     <modules>
         <module>kernel</module>
-        <module>rythmML-external-dsl</module>
-        <module>rythmML-shell</module>
+        <module>dsl</module>
+        <module>shell</module>
     </modules>
 </project>

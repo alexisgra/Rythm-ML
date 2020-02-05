@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.unice.polytech.rythmML</groupId>
-	<artifactId>rythmML-shell</artifactId>
+	<artifactId>shell</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RythmML DSL :: Shell</name>
 	<description>Shell for RythmML</description>
