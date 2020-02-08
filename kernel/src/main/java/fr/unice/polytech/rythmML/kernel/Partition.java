@@ -1,5 +1,7 @@
 package fr.unice.polytech.rythmML.kernel;
 
+import fr.unice.polytech.rythmML.kernel.impl.Track;
+
 import java.util.List;
 
 public interface Partition extends VisitableElement {

@@ -2,7 +2,6 @@ package fr.unice.polytech.rythmML.kernel.impl;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.TemporalWire;
-import fr.unice.polytech.rythmML.kernel.Track;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

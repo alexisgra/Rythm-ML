@@ -1,5 +1,7 @@
 package fr.unice.polytech.rythmML.kernel;
 
+import fr.unice.polytech.rythmML.kernel.impl.Track;
+
 public interface PartitionBuilderFactory {
     Partition createPartition(String name);
 

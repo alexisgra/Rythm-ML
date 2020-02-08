@@ -1,4 +1,7 @@
-package fr.unice.polytech.rythmML.kernel;
+package fr.unice.polytech.rythmML.kernel.impl;
+
+import fr.unice.polytech.rythmML.kernel.Note;
+import fr.unice.polytech.rythmML.kernel.VisitableElement;
 
 import java.util.List;
 
