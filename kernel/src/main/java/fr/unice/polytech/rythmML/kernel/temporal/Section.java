@@ -1,7 +1,5 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.temporal;
 
-import fr.unice.polytech.rythmML.kernel.Section;
-import fr.unice.polytech.rythmML.kernel.TemporalWire;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,17 +14,17 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-class TemporalWireImpl implements TemporalWire {
+public class Section  {
     @EqualsAndHashCode.Exclude
-    private List<Section> sections = new ArrayList<>();
+    private List<Bar> bar = new ArrayList<>();
 
     public void accept(Visitor v) {
-        v.visitTemporalWire(this);
+        v.visitSection(this);
     }
 
-    public TemporalWire addSection(Section section) {
+    public Section addBa(Bar ba) {
         //We imported List automatically;
-        this.sections.add(section);
+        this.bar.add(ba);
         return this;
     }
 }

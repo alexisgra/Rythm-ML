@@ -1,10 +1,9 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.track;
 
-import fr.unice.polytech.rythmML.kernel.Bar;
-import fr.unice.polytech.rythmML.kernel.Section;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -16,17 +15,20 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-class SectionImpl implements Section {
+public class Track {
     @EqualsAndHashCode.Exclude
-    private List<Bar> bar = new ArrayList<>();
+    private List<Note> notes = new ArrayList<>();
+
+    @NonNull
+    private String name;
 
     public void accept(Visitor v) {
-        v.visitSection(this);
+        v.visitTrack(this);
     }
 
-    public Section addBa(Bar ba) {
+    public Track addNote(Note note) {
         //We imported List automatically;
-        this.bar.add(ba);
+        this.notes.add(note);
         return this;
     }
 }

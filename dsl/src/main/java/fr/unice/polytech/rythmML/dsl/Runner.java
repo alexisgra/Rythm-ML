@@ -3,7 +3,7 @@ package fr.unice.polytech.rythmML.dsl;
 import dsl.RythmMLLexer;
 import dsl.RythmMLParser;
 import fr.unice.polytech.rythmML.dsl.visitor.ModelBuilder;
-import fr.unice.polytech.rythmML.kernel.App;
+import fr.unice.polytech.rythmML.kernel.Partition;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,8 +17,8 @@ public class Runner {
     // TODO: 05/02/2020 Change return to MIDI File
     public void run(Path pathFile) throws Exception {
         CharStream stream = getCharStream(pathFile);
-        App theApp = buildModel(stream);
-        theApp.generateMIDI();
+        Partition partition = buildModel(stream);
+        partition.generateMIDI();
     }
 
     private CharStream getCharStream(Path input) throws IOException {
@@ -26,7 +26,7 @@ public class Runner {
         return CharStreams.fromPath(input);
     }
 
-    private App buildModel(CharStream stream) {
+    private Partition buildModel(CharStream stream) {
         RythmMLLexer lexer = new RythmMLLexer(stream);
         lexer.removeErrorListeners();
 

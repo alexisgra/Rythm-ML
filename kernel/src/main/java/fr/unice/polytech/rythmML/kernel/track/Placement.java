@@ -1,7 +1,5 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.track;
 
-import fr.unice.polytech.rythmML.kernel.Note;
-import fr.unice.polytech.rythmML.kernel.Placement;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,11 +11,17 @@ import lombok.experimental.Accessors;
         chain = true
 )
 @RequiredArgsConstructor
-class NoteImpl implements Note {
+public class Placement {
     @EqualsAndHashCode.Exclude
-    private Placement placement;
+    private String beat;
+
+    @EqualsAndHashCode.Exclude
+    private String bar;
+
+    @EqualsAndHashCode.Exclude
+    private String section;
 
     public void accept(Visitor v) {
-        v.visitNote(this);
+        v.visitPlacement(this);
     }
 }

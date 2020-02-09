@@ -1,23 +1,48 @@
 package fr.unice.polytech.rythmML.kernel;
 
-import fr.unice.polytech.rythmML.kernel.impl.Track;
+import fr.unice.polytech.rythmML.kernel.temporal.TemporalGrid;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
+import javax.sound.midi.Track;
+import java.util.ArrayList;
 import java.util.List;
 
-public interface Partition extends VisitableElement {
-    Partition addTrack(Track track);
+@Data
+@Accessors(
+        chain = true
+)
+@RequiredArgsConstructor
+public class Partition {
+    @EqualsAndHashCode.Exclude
+    private List<Track> tracks = new ArrayList<>();
 
-    List<Track> getTracks();
+    @EqualsAndHashCode.Exclude
+    private List<TemporalGrid> temporalWire = new ArrayList<>();
 
-    Partition setTracks(List<Track> tracks);
+    @NonNull
+    private String name;
 
-    Partition addTemporalWir(TemporalWire temporalwir);
+    public void generateMIDI() {
 
-    List<TemporalWire> getTemporalWire();
+    }
 
-    Partition setTemporalWire(List<TemporalWire> temporalWire);
+    public void accept(Visitor v) {
+        v.visitPartition(this);
+    }
 
-    String getName();
+    public Partition addTrack(Track track) {
+        //We imported List automatically;
+        this.tracks.add(track);
+        return this;
+    }
 
-    Partition setName(String name);
+    public Partition addTemporalWir(TemporalGrid temporalwir) {
+        //We imported List automatically;
+        this.temporalWire.add(temporalwir);
+        return this;
+    }
 }
