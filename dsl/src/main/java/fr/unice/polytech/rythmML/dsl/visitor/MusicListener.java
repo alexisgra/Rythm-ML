@@ -22,7 +22,7 @@ public class MusicListener extends RythmMLBaseListener {
     @Override
     public void enterPartition(RythmMLParser.PartitionContext ctx) {
         System.out.println("-------LISTENER--------");
-        System.out.println("partition " + ctx.name.getText());
+        System.out.println(String.format("partition %s", ctx.name.getText()));
         partition = new Partition(ctx.name.getText());
     }
 
@@ -41,16 +41,16 @@ public class MusicListener extends RythmMLBaseListener {
                 }
             }
         }
-        System.out.println("bpm " + ctx.bpmNumber.getText());
-        System.out.println("section " + ctx.sectionNumber.getText());
-        System.out.println("bar " + ctx.barNumber.getText());
+        System.out.println(String.format("bpm %s", ctx.bpmNumber.getText()));
+        System.out.println(String.format("section %s", ctx.sectionNumber.getText()));
+        System.out.println(String.format("bar %s", ctx.barNumber.getText()));
         partition.addTemporalWir(temporalGrid);
     }
 
     @Override
     public void enterTracks(RythmMLParser.TracksContext ctx) {
-        System.out.println("track " + ctx.trackNumber.getText());
-        currentTrack = new Track(ctx.trackNumber.getText());
+        System.out.println(String.format("track %s", ctx.instrument.getText()));
+        currentTrack = new Track(ctx.instrument.getText());
     }
 
     @Override
@@ -61,9 +61,16 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterMusicNote(RythmMLParser.MusicNoteContext ctx) {
-        System.out.println(ctx.instrument.getText() + " on " + ctx.sectionPosition.getText() + ":" + ctx.barPosition.getText() + ":" + ctx.beatPosition.getText());
+        String message;
+        if (ctx.tickPosition == null) {
+            message = String.format("%s:%s:%s", ctx.sectionPosition.getText(), ctx.barPosition.getText(), ctx.beatPosition.getText());
+        } else {
+            message = String.format("%s:%s:%s:%s", ctx.sectionPosition.getText(), ctx.barPosition.getText(), ctx.beatPosition.getText(), ctx.tickPosition.getText());
+        }
+        System.out.println(message);
         Note note = new Note();
         Placement placement = new Placement();
+        // TODO: 09/02/2020 Add the tick position
         placement.setSection(ctx.sectionPosition.getText()).setBar(ctx.barPosition.getText()).setBeat(ctx.beatPosition.getText());
         note.setPlacement(placement);
         currentTrack.addNote(note);
