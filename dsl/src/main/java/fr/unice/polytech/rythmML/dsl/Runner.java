@@ -1,9 +1,9 @@
 package fr.unice.polytech.rythmML.dsl;
 
-import dsl.RythmMLLexer;
-import dsl.RythmMLParser;
-import fr.unice.polytech.rythmML.dsl.visitor.ModelBuilder;
+import fr.unice.polytech.rythmML.dsl.visitor.MusicListener;
 import fr.unice.polytech.rythmML.kernel.Partition;
+import grammar.RythmMLLexer;
+import grammar.RythmMLParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -34,10 +34,10 @@ public class Runner {
         parser.removeErrorListeners();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        ModelBuilder builder = new ModelBuilder();
+        MusicListener listener = new MusicListener();
 
-        walker.walk(builder, parser.app());
+        walker.walk(listener, parser.root());
 
-        return builder.retrieve();
+        return listener.retrieve();
     }
 }

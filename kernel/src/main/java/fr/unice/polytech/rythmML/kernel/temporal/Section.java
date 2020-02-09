@@ -22,9 +22,9 @@ public class Section  {
         v.visitSection(this);
     }
 
-    public Section addBa(Bar ba) {
+    public Section addBar(Bar bar) {
         //We imported List automatically;
-        this.bar.add(ba);
+        this.bar.add(bar);
         return this;
     }
 }

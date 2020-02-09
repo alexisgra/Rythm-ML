@@ -1,13 +1,19 @@
-package fr.unice.polytech.rythmML.externaldsl;
+package fr.unice.polytech.rythmML.dsl.visitor;
 
+import fr.unice.polytech.rythmML.kernel.Partition;
 import grammar.RythmMLBaseListener;
 import grammar.RythmMLParser;
 
 public class MusicListener extends RythmMLBaseListener {
+    private Partition partition;
 
+    public Partition retrieve() {
+        return this.partition;
+    }
     @Override
     public void enterPartition(RythmMLParser.PartitionContext ctx) {
         System.out.println("partition " + ctx.name.getText());
+        partition = new Partition(ctx.name.getText());
     }
 
     @Override
