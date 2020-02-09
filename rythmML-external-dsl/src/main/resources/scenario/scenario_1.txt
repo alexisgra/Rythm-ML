@@ -1,0 +1,17 @@
+partition jeanjacquesgoldman
+
+grid {
+    bpm 4
+    section : 1
+    bar : 3
+}
+
+track 1 {
+    sd on 0:1:1
+    sd on 0:2:1
+}
+
+track 2 {
+    kd on 0:1:2
+    kd on 0:2:2
+}
