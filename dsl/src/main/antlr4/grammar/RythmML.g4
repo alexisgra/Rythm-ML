@@ -6,19 +6,20 @@ grammar RythmML;
 
 root                : partition grid tracks+ EOF;
 
-partition           : 'partition' name=STRING;
+partition           : 'partition ' name=STRING;
 
-grid                : 'grid' '{' init'}';
-    init            : 'bpm' bpmNumber=NUMBER 'section' sectionNumber=NUMBER 'bar' barNumber=NUMBER;
+grid                : 'grid {' init '}';
+    init            : 'bpm ' bpmNumber=NUMBER 'section ' sectionNumber=NUMBER 'bar ' barNumber=NUMBER;
 
-tracks              : 'track' trackNumber=NUMBER  '{' musicNote+ '}';
-    musicNote        : instrument=STRING 'on ' sectionPosition=NUMBER ':' barPosition=NUMBER ':' beatPosition=NUMBER;
+tracks              : 'track ' instrument=STRING '{' musicNote+ '}';
+    musicNote       : sectionPosition=NUMBER ':' barPosition=NUMBER ':' beatPosition=NUMBER (':' tickPosition=(NUMBER|FRACTION))?;
 
 /*****************
  ** Lexer rules **
  *****************/
 STRING : (LOWERCASE|UPPERCASE)+;
 NUMBER: DIGIT+;
+FRACTION: NUMBER '/' NUMBER;
 
 /*************
  ** Helpers **
