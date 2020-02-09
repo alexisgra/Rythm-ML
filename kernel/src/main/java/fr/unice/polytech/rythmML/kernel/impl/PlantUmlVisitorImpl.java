@@ -1,15 +1,7 @@
 package fr.unice.polytech.rythmML.kernel.impl;
 
-import Partition.*;
-import Partition.impl.*;
 import fr.unice.polytech.rythmML.kernel.*;
-import net.sourceforge.plantuml.FileFormat;
-import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.SourceStringReader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +22,7 @@ public class PlantUmlVisitorImpl implements Visitor {
     }
 
     public void visitPartition(Partition partition) {
-        builder.append("object ").append(removeImpl(partition.getClass().getSimpleName())).append("{" + "\n");
+       /* builder.append("object ").append(removeImpl(partition.getClass().getSimpleName())).append("{" + "\n");
         builder.append("partition.getName()".split("get")[1].replace("()", "").toLowerCase()).append(" = ").append("\"").append(partition.getName()).append("\"").append("\n");
         builder.append("}" + "\n");
         for (Track track : partition.getTracks()) {
@@ -55,7 +47,7 @@ public class PlantUmlVisitorImpl implements Visitor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ;
+        ;*/
     }
 
     public void visitTemporalWire(TemporalWire temporalwire) {

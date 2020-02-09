@@ -1,7 +1,6 @@
 package fr.unice.polytech.rythmML.kernel.impl;
 
 import fr.unice.polytech.rythmML.kernel.Note;
-import fr.unice.polytech.rythmML.kernel.Track;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
