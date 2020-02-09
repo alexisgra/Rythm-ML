@@ -10,10 +10,12 @@ package fr.unice.polytech.rythmML.kernel; /**
 
 import fr.unice.polytech.rythmML.kernel.graphic.MainGraphic;
 
-import java.io.*;
 import javax.imageio.ImageIO;
-import javax.sound.midi.*; // package for all midi classes
-public class Main
+import javax.sound.midi.*;
+import java.io.File;
+
+public class
+Main
 {
 	public static void main(String argv[]) {
 		System.out.println("midifile begin ");

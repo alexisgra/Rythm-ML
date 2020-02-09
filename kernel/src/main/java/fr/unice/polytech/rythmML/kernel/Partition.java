@@ -1,13 +1,14 @@
 package fr.unice.polytech.rythmML.kernel;
 
 import fr.unice.polytech.rythmML.kernel.temporal.TemporalGrid;
+import fr.unice.polytech.rythmML.kernel.track.Track;
+import fr.unice.polytech.rythmML.kernel.visitor.MidiVisitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.sound.midi.Track;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class Partition {
     private String name;
 
     public void generateMIDI() {
-
+        MidiVisitor midiVisitor = new MidiVisitor();
+        midiVisitor.visitPartition(this);
     }
 
     public void accept(Visitor v) {
