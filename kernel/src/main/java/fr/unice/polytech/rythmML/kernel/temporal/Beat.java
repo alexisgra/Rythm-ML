@@ -1,8 +1,8 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.temporal;
 
-import fr.unice.polytech.rythmML.kernel.Bar;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -11,8 +11,11 @@ import lombok.experimental.Accessors;
         chain = true
 )
 @RequiredArgsConstructor
-class BarImpl implements Bar {
+public class Beat {
+    @NonNull
+    private String name;
+
     public void accept(Visitor v) {
-        v.visitBar(this);
+        v.visitBeat(this);
     }
 }

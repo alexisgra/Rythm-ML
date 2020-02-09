@@ -1,9 +1,8 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.track;
 
-import fr.unice.polytech.rythmML.kernel.Time;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
-import lombok.NonNull;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -12,11 +11,11 @@ import lombok.experimental.Accessors;
         chain = true
 )
 @RequiredArgsConstructor
-class TimeImpl implements Time {
-    @NonNull
-    private String name;
+public class Note {
+    @EqualsAndHashCode.Exclude
+    private Placement placement;
 
     public void accept(Visitor v) {
-        v.visitTime(this);
+        v.visitNote(this);
     }
 }

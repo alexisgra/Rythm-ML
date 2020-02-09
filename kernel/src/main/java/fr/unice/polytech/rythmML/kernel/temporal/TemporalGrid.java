@@ -1,10 +1,8 @@
-package fr.unice.polytech.rythmML.kernel.impl;
+package fr.unice.polytech.rythmML.kernel.temporal;
 
-import fr.unice.polytech.rythmML.kernel.Note;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -16,20 +14,17 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-class TrackImpl implements Track {
+public class TemporalGrid {
     @EqualsAndHashCode.Exclude
-    private List<Note> notes = new ArrayList<>();
-
-    @NonNull
-    private String name;
+    private List<Section> sections = new ArrayList<>();
 
     public void accept(Visitor v) {
-        v.visitTrack(this);
+        v.visitTemporalWire(this);
     }
 
-    public Track addNote(Note note) {
+    public TemporalGrid addSection(Section section) {
         //We imported List automatically;
-        this.notes.add(note);
+        this.sections.add(section);
         return this;
     }
 }

@@ -1,0 +1,50 @@
+@startuml
+skinparam linetype polyline
+
+
+Interface Visitor{
+}
+Interface VisitableElement{
+}
+
+class Partition {
+}
+
+' Tracks
+class Track {
+}
+class Note {
+}
+class Placement {
+}
+
+' TemporalGrid
+class TemporalGrid {
+}
+class Section {
+}
+class Bar {
+}
+class Beat {
+}
+
+' Enum Declaration
+enum Instruments {
+
+}
+
+' All attributes
+
+Partition "1" *--> "*" Track : tracks
+Partition "1" *--> "1" TemporalGrid : grid
+
+' Tracks
+Track "1" *--> "*" Note : notes
+Note "*" --> "1" Placement : placements
+
+' Grid
+TemporalGrid "1" --> "*" Section : sections
+Section "1" --> "*" Bar : bars
+Bar "1" --> "*" Beat : beats
+
+@enduml

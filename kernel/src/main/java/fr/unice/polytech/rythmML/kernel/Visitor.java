@@ -1,11 +1,17 @@
 package fr.unice.polytech.rythmML.kernel;
 
-import fr.unice.polytech.rythmML.kernel.impl.Track;
+import fr.unice.polytech.rythmML.kernel.temporal.Bar;
+import fr.unice.polytech.rythmML.kernel.temporal.Section;
+import fr.unice.polytech.rythmML.kernel.temporal.TemporalGrid;
+import fr.unice.polytech.rythmML.kernel.temporal.Beat;
+import fr.unice.polytech.rythmML.kernel.track.Note;
+import fr.unice.polytech.rythmML.kernel.track.Placement;
+import fr.unice.polytech.rythmML.kernel.track.Track;
 
 public interface Visitor {
     void visitPartition(Partition partition);
 
-    void visitTemporalWire(TemporalWire temporalwire);
+    void visitTemporalWire(TemporalGrid temporalwire);
 
     void visitBar(Bar bar);
 
@@ -13,7 +19,7 @@ public interface Visitor {
 
     void visitPlacement(Placement placement);
 
-    void visitTime(Time time);
+    void visitBeat(Beat beat);
 
     void visitSection(Section section);
 
