@@ -1,6 +1,7 @@
 package fr.unice.polytech.rythmML.dsl.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
+import fr.unice.polytech.rythmML.kernel.data.Instrument;
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
 import fr.unice.polytech.rythmML.kernel.temporal.Beat;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
@@ -15,6 +16,7 @@ public class MusicListener extends RythmMLBaseListener {
     private Partition partition = null;
     private Track currentTrack = null;
     private TemporalGrid temporalGrid = new TemporalGrid();
+
     public Partition retrieve() {
         return this.partition;
     }
@@ -50,7 +52,11 @@ public class MusicListener extends RythmMLBaseListener {
     @Override
     public void enterTracks(RythmMLParser.TracksContext ctx) {
         System.out.println(String.format("track %s", ctx.instrument.getText()));
-        currentTrack = new Track(ctx.instrument.getText());
+        Instrument instrument = Instrument.lookupByDisplayName(ctx.instrument.getText());
+        if (instrument == null) {
+            throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
+        }
+        currentTrack = new Track(instrument);
     }
 
     @Override

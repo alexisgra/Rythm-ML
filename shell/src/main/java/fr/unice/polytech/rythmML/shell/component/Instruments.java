@@ -1,5 +1,6 @@
 package fr.unice.polytech.rythmML.shell.component;
 
+import fr.unice.polytech.rythmML.kernel.data.Instrument;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
@@ -20,10 +21,10 @@ public class Instruments {
 		buffer.append("Rythm ML language provide these instruments...");
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
-		for (final fr.unice.polytech.rythmML.kernel.data.Instruments instru : fr.unice.polytech.rythmML.kernel.data.Instruments.values()) {
-			buffer.append(instru);
+		for (final Instrument instru : Instrument.values()) {
+			buffer.append(instru.displayName);
 			buffer.append(" - ");
-			buffer.append(instru.label);
+			buffer.append(instru.description);
 			buffer.append(System.lineSeparator());
 		}
 		return buffer.toString();

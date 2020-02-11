@@ -1,6 +1,7 @@
 package fr.unice.polytech.rythmML.kernel.track;
 
 import fr.unice.polytech.rythmML.kernel.Visitor;
+import fr.unice.polytech.rythmML.kernel.data.Instrument;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -20,7 +21,7 @@ public class Track {
     private List<Note> notes = new ArrayList<>();
 
     @NonNull
-    private String name;
+    private Instrument instrument;
 
     public void accept(Visitor v) {
         v.visitTrack(this);

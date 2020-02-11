@@ -10,7 +10,11 @@ import fr.unice.polytech.rythmML.kernel.track.Note;
 import fr.unice.polytech.rythmML.kernel.track.Placement;
 import fr.unice.polytech.rythmML.kernel.track.Track;
 
+import javax.sound.midi.Sequence;
+
 public class MidiVisitor implements Visitor {
+    private Sequence sequence;
+
     @Override
     public void visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
@@ -49,7 +53,7 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitBeat(Beat beat) {
-        System.out.println(beat.getName());
+        //System.out.println(beat.getName());
     }
 
     @Override
