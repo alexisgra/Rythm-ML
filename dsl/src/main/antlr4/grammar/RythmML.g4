@@ -4,22 +4,28 @@ grammar RythmML;
  ** Parser rules **
  ******************/
 
-root                : partition grid tracks+ EOF;
+root                : partition grid bar+ section+ EOF;
 
-partition           : 'partition ' name=STRING;
+partition           : 'partition' name=IDENTIFIER;
 
 grid                : 'grid {' init '}';
-    init            : 'bpm ' bpmNumber=NUMBER 'section ' sectionNumber=NUMBER 'bar ' barNumber=NUMBER;
+    init            : 'bpm' bpmNumber=NUMBER
+                      'bpb' beatPerBar=NUMBER
+                      'composition {' composition=IDENTIFIER+ '}';
 
-tracks              : 'track ' instrument=STRING '{' musicNote+ '}';
-    musicNote       : sectionPosition=NUMBER ':' barPosition=NUMBER ':' beatPosition=NUMBER (':' tickPosition=(NUMBER|FRACTION))?;
+bar                 : 'bar' barName=IDENTIFIER '{' musicNote+ '}';
+    musicNote       : instrument=IDENTIFIER 'on' note=('beat'|'quarter') notes;
+
+section             : 'section' sectionName=IDENTIFIER '{' barOfSection+ '}';
+    barOfSection    : replace='replace'? 'bar' notes barName=IDENTIFIER;
+
+notes: NUMBER+|NUMBER '-' NUMBER;
 
 /*****************
  ** Lexer rules **
  *****************/
-STRING : (LOWERCASE|UPPERCASE)+;
+IDENTIFIER: (LOWERCASE|UPPERCASE) (LOWERCASE|UPPERCASE|DIGIT)+;
 NUMBER: DIGIT+;
-FRACTION: NUMBER '/' NUMBER;
 
 /*************
  ** Helpers **

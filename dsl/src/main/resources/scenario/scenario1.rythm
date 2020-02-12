@@ -2,27 +2,34 @@ partition JohnnyBGoode
 
 grid {
     bpm 170
-    section 1
-    bar 55
+    bpb 4
+    composition {
+        intro
+        verse1
+        chorus
+        verse2
+        chorus
+    }
 }
 
-track bd {
-    1:1:1
-    1:1:3
+bar mainBar {
+    bd on beat 1 3
+    sd on beat 2 4
+    rc on quarter 1 2 3 4 5 6 7 8
 }
 
-track sd {
-    1:1:2
-    1:1:4
+section intro {
+    bar 6-13 mainBar
 }
 
-track rc {
-    1:1:1
-    1:1:1:1/2
-    1:1:2
-    1:1:2:1/2
-    1:1:3
-    1:1:3:1/2
-    1:1:4
-    1:1:4:1/2
+section verse1 {
+    bar 1-12 mainBar
+}
+
+section chorus {
+    bar 1-12 mainBar
+}
+
+section verse2 {
+    bar 1-12 mainBar
 }

@@ -2,20 +2,18 @@ package fr.unice.polytech.rythmML.dsl.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.data.Instrument;
-import fr.unice.polytech.rythmML.kernel.temporal.Bar;
-import fr.unice.polytech.rythmML.kernel.temporal.Beat;
-import fr.unice.polytech.rythmML.kernel.temporal.Section;
-import fr.unice.polytech.rythmML.kernel.temporal.TemporalGrid;
-import fr.unice.polytech.rythmML.kernel.track.Note;
-import fr.unice.polytech.rythmML.kernel.track.Placement;
-import fr.unice.polytech.rythmML.kernel.track.Track;
 import grammar.RythmMLBaseListener;
 import grammar.RythmMLParser;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.List;
 
 public class MusicListener extends RythmMLBaseListener {
     private Partition partition = null;
-    private Track currentTrack = null;
-    private TemporalGrid temporalGrid = new TemporalGrid();
+    private String currentBar = null;
+    private String currentSection = null;
+    private Instrument currentMusicNote = null;
+    private String currentBarOfSection = null;
 
     public Partition retrieve() {
         return this.partition;
@@ -30,55 +28,88 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterInit(RythmMLParser.InitContext ctx) {
-        Section currentSection;
-        Bar currentBar;
-        for (int i = 0; i < Integer.parseInt(ctx.sectionNumber.getText()); i++) {
-            currentSection = new Section();
-            temporalGrid.addSection(currentSection);
-            for (int j = 0; j < Integer.parseInt(ctx.barNumber.getText()); j++) {
-                currentBar = new Bar();
-                currentSection.addBar(currentBar);
-                for (int k = 0; k < Integer.parseInt(ctx.bpmNumber.getText()); k++) {
-                    currentBar.addBeat(new Beat(Integer.toString(k)));
-                }
-            }
+        String bpm = ctx.bpmNumber.getText();
+        String beatPerBar = ctx.beatPerBar.getText();
+        List<TerminalNode> composition = ctx.IDENTIFIER();
+        System.out.println(String.format("bpm %s", bpm));
+        System.out.println(String.format("beatPerBar %s", beatPerBar));
+        System.out.println("composition");
+        for (TerminalNode terminalNode : composition) {
+            System.out.println(terminalNode.getSymbol().getText());
         }
-        System.out.println(String.format("bpm %s", ctx.bpmNumber.getText()));
-        System.out.println(String.format("section %s", ctx.sectionNumber.getText()));
-        System.out.println(String.format("bar %s", ctx.barNumber.getText()));
-        partition.addTemporalWir(temporalGrid);
     }
 
     @Override
-    public void enterTracks(RythmMLParser.TracksContext ctx) {
-        System.out.println(String.format("track %s", ctx.instrument.getText()));
-        Instrument instrument = Instrument.lookupByDisplayName(ctx.instrument.getText());
-        if (instrument == null) {
-            throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
-        }
-        currentTrack = new Track(instrument);
-    }
-
-    @Override
-    public void exitTracks(RythmMLParser.TracksContext ctx) {
-        this.partition.addTrack(currentTrack);
-        currentTrack = null;
+    public void enterBar(RythmMLParser.BarContext ctx) {
+        String barName = ctx.barName.getText();
+        currentBar = barName;
+        System.out.println(String.format("bar %s", barName));
     }
 
     @Override
     public void enterMusicNote(RythmMLParser.MusicNoteContext ctx) {
-        String message;
-        if (ctx.tickPosition == null) {
-            message = String.format("%s:%s:%s", ctx.sectionPosition.getText(), ctx.barPosition.getText(), ctx.beatPosition.getText());
-        } else {
-            message = String.format("%s:%s:%s:%s", ctx.sectionPosition.getText(), ctx.barPosition.getText(), ctx.beatPosition.getText(), ctx.tickPosition.getText());
+        Instrument instrument = Instrument.lookupByDisplayName(ctx.instrument.getText());
+        if (instrument == null) {
+            throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
-        System.out.println(message);
-        Note note = new Note();
-        Placement placement = new Placement();
-        // TODO: 09/02/2020 Add the tick position
-        placement.setSection(ctx.sectionPosition.getText()).setBar(ctx.barPosition.getText()).setBeat(ctx.beatPosition.getText());
-        note.setPlacement(placement);
-        currentTrack.addNote(note);
+        System.out.println(String.format("instrument %s", instrument.displayName));
+        if (ctx.note.getText().equals("beat")) {
+
+        } else if (ctx.note.getText().equals("quarter")) {
+
+        }
+
+        currentMusicNote = instrument;
+    }
+
+    @Override
+    public void exitBar(RythmMLParser.BarContext ctx) {
+        currentBar = null;
+    }
+
+    @Override
+    public void enterNotes(RythmMLParser.NotesContext ctx) {
+        List<TerminalNode> nodes = ctx.NUMBER();
+        for (TerminalNode node : nodes) {
+            System.out.println(node.getSymbol().getText());
+        }
+        if (currentMusicNote != null) {
+
+        } else if (currentBarOfSection != null) {
+
+        }
+    }
+
+    @Override
+    public void exitMusicNote(RythmMLParser.MusicNoteContext ctx) {
+        currentMusicNote = null;
+    }
+
+    @Override
+    public void enterSection(RythmMLParser.SectionContext ctx) {
+        String sectionName = ctx.sectionName.getText();
+        currentSection = sectionName;
+        System.out.println(String.format("section %s", sectionName));
+    }
+
+    @Override
+    public void enterBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
+        if (ctx.replace != null) {
+            System.out.println("replace");
+        }
+        String barName = ctx.barName.getText();
+        // todo : change this
+        currentBarOfSection = barName;
+        System.out.println(String.format("barName %s", barName));
+    }
+
+    @Override
+    public void exitBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
+        currentBarOfSection = null;
+    }
+
+    @Override
+    public void exitSection(RythmMLParser.SectionContext ctx) {
+        currentSection = null;
     }
 }
