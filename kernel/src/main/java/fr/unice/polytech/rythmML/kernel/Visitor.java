@@ -1,9 +1,9 @@
 package fr.unice.polytech.rythmML.kernel;
 
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
-import fr.unice.polytech.rythmML.kernel.temporal.Section;
-import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Beat;
+import fr.unice.polytech.rythmML.kernel.temporal.Composition;
+import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.kernel.track.Note;
 
 public interface Visitor {
@@ -15,11 +15,7 @@ public interface Visitor {
 
     void visitNote(Note note);
 
-    void visitPlacement(Placement placement);
-
     void visitBeat(Beat beat);
 
     void visitSection(Section section);
-
-    void visitTrack(Track track);
 }

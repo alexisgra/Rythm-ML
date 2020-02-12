@@ -1,11 +1,12 @@
+
 package fr.unice.polytech.rythmML.kernel.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
 import fr.unice.polytech.rythmML.kernel.temporal.Beat;
-import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
+import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.kernel.track.Note;
 
 import javax.sound.midi.Sequence;
@@ -17,12 +18,9 @@ public class MidiVisitor implements Visitor {
     public void visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
         System.out.println(partition.getName());
-        for (Track track : partition.getTracks()) {
-            this.visitTrack(track);
-        }
-        for (Composition temporalGrid : partition.getTemporalWire()) {
+       /* for (Composition temporalGrid : partition.getTemporalWire()) {
             this.visitTemporalWire(temporalGrid);
-        }
+        }*/
     }
 
     @Override
@@ -41,12 +39,6 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitNote(Note note) {
-        visitPlacement(note.getPlacement());
-    }
-
-    @Override
-    public void visitPlacement(Placement placement) {
-        System.out.println(placement.getSection() + ":" + placement.getBar() + ":" + placement.getBeat());
     }
 
     @Override
@@ -56,15 +48,8 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitSection(Section section) {
-        for (Bar bar : section.getBar()) {
+        /*for (Bar bar : section.getBar()) {
             this.visitBar(bar);
-        }
-    }
-
-    @Override
-    public void visitTrack(Track track) {
-        for (Note note : track.getNotes()) {
-            this.visitNote(note);
-        }
+        }*/
     }
 }

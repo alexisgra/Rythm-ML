@@ -1,19 +1,22 @@
 package fr.unice.polytech.rythmML.dsl.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
-import fr.unice.polytech.rythmML.kernel.data.Instrument;
+import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
+import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import grammar.RythmMLBaseListener;
 import grammar.RythmMLParser;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusicListener extends RythmMLBaseListener {
     private Partition partition = null;
     private String currentBar = null;
     private String currentSection = null;
-    private Instrument currentMusicNote = null;
+    private DrumsElements currentMusicNote = null;
     private String currentBarOfSection = null;
+    private List<Section> sections = new ArrayList<>();
 
     public Partition retrieve() {
         return this.partition;
@@ -30,12 +33,13 @@ public class MusicListener extends RythmMLBaseListener {
     public void enterInit(RythmMLParser.InitContext ctx) {
         String bpm = ctx.bpmNumber.getText();
         String beatPerBar = ctx.beatPerBar.getText();
-        List<TerminalNode> composition = ctx.IDENTIFIER();
+        List<TerminalNode> compositions = ctx.IDENTIFIER();
         System.out.println(String.format("bpm %s", bpm));
         System.out.println(String.format("beatPerBar %s", beatPerBar));
         System.out.println("composition");
-        for (TerminalNode terminalNode : composition) {
-            System.out.println(terminalNode.getSymbol().getText());
+        for (TerminalNode composition : compositions) {
+            new Section();
+            composition.getSymbol().getText();
         }
     }
 
@@ -48,15 +52,15 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterMusicNote(RythmMLParser.MusicNoteContext ctx) {
-        Instrument instrument = Instrument.lookupByDisplayName(ctx.instrument.getText());
+        DrumsElements instrument = DrumsElements.lookupByDisplayName(ctx.instrument.getText());
         if (instrument == null) {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
-        System.out.println(String.format("instrument %s", instrument.displayName));
+        System.out.print(String.format("instrument %s", instrument.displayName));
         if (ctx.note.getText().equals("beat")) {
-
+            System.out.println(" on beat");
         } else if (ctx.note.getText().equals("quarter")) {
-
+            System.out.println(" on quarter");
         }
 
         currentMusicNote = instrument;
