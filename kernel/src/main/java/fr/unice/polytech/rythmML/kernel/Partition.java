@@ -8,9 +8,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Accessors(
         chain = true
@@ -19,7 +16,7 @@ import java.util.List;
 public class Partition {
 
     @EqualsAndHashCode.Exclude
-    private Composition composition;
+    private Composition composition = new Composition();
 
     @NonNull
     private String name;

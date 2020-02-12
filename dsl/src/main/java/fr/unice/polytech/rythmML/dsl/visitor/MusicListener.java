@@ -2,21 +2,29 @@ package fr.unice.polytech.rythmML.dsl.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
+import fr.unice.polytech.rythmML.kernel.temporal.Bar;
+import fr.unice.polytech.rythmML.kernel.temporal.Beat;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
+import fr.unice.polytech.rythmML.kernel.track.Note;
 import grammar.RythmMLBaseListener;
 import grammar.RythmMLParser;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MusicListener extends RythmMLBaseListener {
     private Partition partition = null;
-    private String currentBar = null;
+    private Bar currentBar = null;
+    private Beat currentBeat = null;
     private String currentSection = null;
     private DrumsElements currentMusicNote = null;
     private String currentBarOfSection = null;
     private List<Section> sections = new ArrayList<>();
+    private List<Bar> barsLibrary = new ArrayList<>();
+    private int beatPerBar = 0;
 
     public Partition retrieve() {
         return this.partition;
@@ -30,24 +38,32 @@ public class MusicListener extends RythmMLBaseListener {
     }
 
     @Override
+    public void exitPartition(RythmMLParser.PartitionContext ctx) {
+        partition.getComposition().setSections(sections);
+    }
+
+    @Override
     public void enterInit(RythmMLParser.InitContext ctx) {
         String bpm = ctx.bpmNumber.getText();
-        String beatPerBar = ctx.beatPerBar.getText();
+        this.beatPerBar = Integer.parseInt(ctx.beatPerBar.getText());
         List<TerminalNode> compositions = ctx.IDENTIFIER();
         System.out.println(String.format("bpm %s", bpm));
         System.out.println(String.format("beatPerBar %s", beatPerBar));
         System.out.println("composition");
         for (TerminalNode composition : compositions) {
-            new Section();
-            composition.getSymbol().getText();
+            Section section = new Section();
+            section.setName(composition.getSymbol().getText());
+            sections.add(section);
+            System.out.println(composition.getSymbol().getText());
         }
     }
 
     @Override
     public void enterBar(RythmMLParser.BarContext ctx) {
-        String barName = ctx.barName.getText();
-        currentBar = barName;
-        System.out.println(String.format("bar %s", barName));
+        currentBar = new Bar(this.beatPerBar + 4);
+        currentBar.setName(ctx.barName.getText());
+        this.barsLibrary.add(currentBar);
+        System.out.println(String.format("bar %s", ctx.barName.getText()));
     }
 
     @Override
@@ -56,14 +72,16 @@ public class MusicListener extends RythmMLBaseListener {
         if (instrument == null) {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
-        System.out.print(String.format("instrument %s", instrument.displayName));
+        this.currentBeat = new Beat();
+        System.out.println(String.format("instrument %s", instrument.displayName));
         if (ctx.note.getText().equals("beat")) {
             System.out.println(" on beat");
         } else if (ctx.note.getText().equals("quarter")) {
             System.out.println(" on quarter");
         }
-
         currentMusicNote = instrument;
+        Note note = new Note(currentMusicNote);
+        this.currentBeat.addNote(note);
     }
 
     @Override
@@ -73,20 +91,23 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterNotes(RythmMLParser.NotesContext ctx) {
-        List<TerminalNode> nodes = ctx.NUMBER();
-        for (TerminalNode node : nodes) {
-            System.out.println(node.getSymbol().getText());
-        }
+        List<Integer> nodes = getRealBeatPlacement(ctx.children);
         if (currentMusicNote != null) {
-
-        } else if (currentBarOfSection != null) {
-
+            for (Integer placement : nodes) {
+                currentBar.addBeat(currentBeat, placement - 1);
+            }
+        }
+        if (currentBarOfSection != null) {
+            Bar emptyBar = new Bar(beatPerBar);
+            emptyBar.setName("emptyBar");
+            getSectionFromLibraryByName(currentSection).addBar(emptyBar, nodes.get(0) - 1);
+            getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), nodes.size());
         }
     }
 
     @Override
     public void exitMusicNote(RythmMLParser.MusicNoteContext ctx) {
-        currentMusicNote = null;
+        this.currentMusicNote = null;
     }
 
     @Override
@@ -115,5 +136,51 @@ public class MusicListener extends RythmMLBaseListener {
     @Override
     public void exitSection(RythmMLParser.SectionContext ctx) {
         currentSection = null;
+    }
+
+    private Bar getBarFromLibraryByName(String name) {
+        for (Bar bar : barsLibrary) {
+            if (bar.getName().equals(name)) {
+                return bar;
+            }
+        }
+        throw new IllegalArgumentException("this bar " + name + " has not been defined before");
+    }
+
+    private Section getSectionFromLibraryByName(String name) {
+        for (Section section : sections) {
+            if (section.getName().equals(name)) {
+                return section;
+            }
+        }
+        throw new IllegalArgumentException("this section " + name + " has not been defined before");
+    }
+
+
+    /**
+     * This can be refactored
+     *
+     * @param children list of parsed music notes, ex1:(6 - 13) ex2:(2 4 5 6)
+     * @return the list with all the numbers of beat placement, ex1: (6 7 8 9 10 11 12 13) ex2:(2 4 5 6)
+     */
+    private List<Integer> getRealBeatPlacement(List<ParseTree> children) {
+        List<Integer> integerList = new ArrayList<>();
+        boolean concernsMultipleNumber = false;
+        for (ParseTree parseTree : children) {
+            if (parseTree.getText().equals("-")) {
+                concernsMultipleNumber = true;
+            } else {
+                if (concernsMultipleNumber) {
+                    for (int i = integerList.get(integerList.size() - 1) + 1; i <= Integer.parseInt(parseTree.getText()); i++) {
+                        integerList.add(i);
+                    }
+                    concernsMultipleNumber = false;
+                } else {
+                    integerList.add(Integer.parseInt(parseTree.getText()));
+                }
+            }
+        }
+        Collections.sort(integerList);
+        return integerList;
     }
 }

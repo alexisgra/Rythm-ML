@@ -12,10 +12,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class Runner {
+class Runner {
 
     // TODO: 05/02/2020 Change return to MIDI File
-    public void run(Path pathFile) throws Exception {
+    void run(Path pathFile) throws Exception {
         CharStream stream = getCharStream(pathFile);
         Partition partition = buildModel(stream);
         partition.generateMIDI();
@@ -29,7 +29,6 @@ public class Runner {
     private Partition buildModel(CharStream stream) {
         RythmMLLexer lexer = new RythmMLLexer(stream);
         lexer.removeErrorListeners();
-
         RythmMLParser parser = new RythmMLParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners();
 

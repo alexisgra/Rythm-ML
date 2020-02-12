@@ -4,7 +4,6 @@ import fr.unice.polytech.rythmML.kernel.Visitor;
 import fr.unice.polytech.rythmML.kernel.track.Note;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -33,6 +32,10 @@ public class Beat {
 
     public void addNote(final Note note) {
         this.notes.add(note);
+    }
+
+    public void addNotes(final List<Note> notes) {
+        this.notes.addAll(notes);
     }
 
     public void accept(Visitor v) {

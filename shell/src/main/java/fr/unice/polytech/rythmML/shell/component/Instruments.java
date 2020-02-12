@@ -22,7 +22,7 @@ public class Instruments {
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		for (final DrumsElements instru : DrumsElements.values()) {
-			buffer.append(instru);
+			buffer.append(instru.displayName);
 			buffer.append(" - ");
 			buffer.append(instru.description);
 			buffer.append(System.lineSeparator());
