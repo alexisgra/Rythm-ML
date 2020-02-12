@@ -1,5 +1,6 @@
 package fr.unice.polytech.rythmML.kernel.temporal;
 
+import fr.unice.polytech.rythmML.kernel.NamedElement;
 import fr.unice.polytech.rythmML.kernel.VisitableElement;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
@@ -15,16 +16,20 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-public class Bar implements VisitableElement {
+public class Bar extends NamedElement implements VisitableElement {
 
     @EqualsAndHashCode.Exclude
-    private List<Beat> beats = new ArrayList<>();
+    private Beat[] beats;
 
+    public Bar (final int beatNumber){
+        this.beats = new Beat[beatNumber];
+    }
 
-    public Bar addBeat(Beat beat) {
-        //We imported List automatically;
-        this.beats.add(beat);
-        return this;
+    public void addBeat(final Beat beat, final int beatNumber) {
+        if(this.beats.length < beatNumber){
+            this.beats[beatNumber] = beat;
+        }
+        throw new IllegalArgumentException("Too many beats in the bar " + this.name);
     }
 
     public void accept(Visitor v) {

@@ -14,7 +14,7 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-public class TemporalGrid {
+public class Composition {
     @EqualsAndHashCode.Exclude
     private List<Section> sections = new ArrayList<>();
 
@@ -22,9 +22,9 @@ public class TemporalGrid {
         v.visitTemporalWire(this);
     }
 
-    public TemporalGrid addSection(Section section) {
-        //We imported List automatically;
-        this.sections.add(section);
-        return this;
+    public void addSection(final Section section, final int repeat) {
+        for (int i = 0; i<repeat; i++){
+            this.sections.add(section);
+        }
     }
 }

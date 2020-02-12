@@ -1,6 +1,10 @@
 package fr.unice.polytech.rythmML.shell.component;
 
-import fr.unice.polytech.rythmML.kernel.data.Instrument;
+<<<<<<< Updated upstream
+=======
+import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
+import fr.unice.polytech.rythmML.shell.visualizer.OpenBrowser;
+>>>>>>> Stashed changes
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
@@ -21,12 +25,18 @@ public class Instruments {
 		buffer.append("Rythm ML language provide these instruments...");
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
+<<<<<<< Updated upstream
 		for (final Instrument instru : Instrument.values()) {
 			buffer.append(instru.displayName);
+=======
+		for (final DrumsElements instru : DrumsElements.values()) {
+			buffer.append(instru);
+>>>>>>> Stashed changes
 			buffer.append(" - ");
 			buffer.append(instru.description);
 			buffer.append(System.lineSeparator());
 		}
+		OpenBrowser.openBrowser();
 		return buffer.toString();
 	}
 

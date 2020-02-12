@@ -5,10 +5,8 @@ import fr.unice.polytech.rythmML.kernel.Visitor;
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
 import fr.unice.polytech.rythmML.kernel.temporal.Beat;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
-import fr.unice.polytech.rythmML.kernel.temporal.TemporalGrid;
+import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.track.Note;
-import fr.unice.polytech.rythmML.kernel.track.Placement;
-import fr.unice.polytech.rythmML.kernel.track.Track;
 
 import javax.sound.midi.Sequence;
 
@@ -22,13 +20,13 @@ public class MidiVisitor implements Visitor {
         for (Track track : partition.getTracks()) {
             this.visitTrack(track);
         }
-        for (TemporalGrid temporalGrid : partition.getTemporalWire()) {
+        for (Composition temporalGrid : partition.getTemporalWire()) {
             this.visitTemporalWire(temporalGrid);
         }
     }
 
     @Override
-    public void visitTemporalWire(TemporalGrid temporalwire) {
+    public void visitTemporalWire(Composition temporalwire) {
         for (Section section : temporalwire.getSections()) {
             this.visitSection(section);
         }

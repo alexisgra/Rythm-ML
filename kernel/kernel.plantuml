@@ -11,15 +11,11 @@ class Partition {
 }
 
 ' Tracks
-class Track {
-}
 class Note {
-}
-class Placement {
 }
 
 ' TemporalGrid
-class TemporalGrid {
+class Composition {
 }
 class Section {
 }
@@ -27,6 +23,10 @@ class Bar {
 }
 class Beat {
 }
+class Tick {
+}
+
+
 
 ' Enum Declaration
 enum Instruments {
@@ -35,16 +35,15 @@ enum Instruments {
 
 ' All attributes
 
-Partition "1" *--> "*" Track : tracks
-Partition "1" *--> "1" TemporalGrid : grid
+Partition "1" *--> "1" Composition : composition
 
-' Tracks
-Track "1" *--> "*" Note : notes
-Note "*" --> "1" Placement : placements
 
 ' Grid
-TemporalGrid "1" --> "*" Section : sections
+Composition "1" --> "*" Section : sections
 Section "1" --> "*" Bar : bars
 Bar "1" --> "*" Beat : beats
+Beat "1" --> "*" Tick : ticks
+Beat "*" --> "*" Note : musicNote
+Tick "*" --> "*" Note : musicNote
 
 @enduml

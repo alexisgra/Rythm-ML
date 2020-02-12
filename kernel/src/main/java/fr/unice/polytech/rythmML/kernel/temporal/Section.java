@@ -16,15 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Section  {
     @EqualsAndHashCode.Exclude
-    private List<Bar> bar = new ArrayList<>();
+    private List<Bar> bars = new ArrayList<>();
 
     public void accept(Visitor v) {
         v.visitSection(this);
     }
 
-    public Section addBar(Bar bar) {
-        //We imported List automatically;
-        this.bar.add(bar);
-        return this;
+    public void addBar(final Bar bar, final int repeat) {
+        for (int i = 0; i<repeat; i++){
+            this.bars.add(bar);
+        }
     }
 }

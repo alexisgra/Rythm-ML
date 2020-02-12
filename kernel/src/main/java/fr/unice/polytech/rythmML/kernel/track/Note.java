@@ -1,6 +1,8 @@
 package fr.unice.polytech.rythmML.kernel.track;
 
+import fr.unice.polytech.rythmML.kernel.Main;
 import fr.unice.polytech.rythmML.kernel.Visitor;
+import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +14,8 @@ import lombok.experimental.Accessors;
 )
 @RequiredArgsConstructor
 public class Note {
-    @EqualsAndHashCode.Exclude
-    private Placement placement;
+
+    private DrumsElements drumElements;
 
     public void accept(Visitor v) {
         v.visitNote(this);
