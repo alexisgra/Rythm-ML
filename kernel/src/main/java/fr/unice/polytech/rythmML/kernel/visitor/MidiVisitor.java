@@ -8,48 +8,88 @@ import fr.unice.polytech.rythmML.kernel.temporal.Beat;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.kernel.track.Note;
+import fr.unice.polytech.rythmML.kernel.utils.TemporalUtils;
 
-import javax.sound.midi.Sequence;
+import javax.sound.midi.*;
+import java.time.temporal.TemporalUnit;
 
 public class MidiVisitor implements Visitor {
     private Sequence sequence;
 
+    private int currentBar;
+    private int currentBeat;
+
+    private Track track;
     @Override
     public void visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
         System.out.println(partition.getName());
-       /* for (Composition temporalGrid : partition.getTemporalWire()) {
-            this.visitTemporalWire(temporalGrid);
-        }*/
+        try {
+            this.sequence = new Sequence(Sequence.PPQ, 120);
+            this.track = sequence.createTrack();
+            this.currentBar = 0;
+            this.visitComposition(partition.getComposition());
+
+            Sequencer sequencer = MidiSystem.getSequencer();
+            sequencer.open();
+            sequencer.setSequence(this.sequence);
+            sequencer.start();
+        } catch (InvalidMidiDataException e) {
+            e.printStackTrace();
+        } catch (MidiUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void visitTemporalWire(Composition temporalwire) {
-        for (Section section : temporalwire.getSections()) {
+    public void visitComposition(Composition composition) {
+        for(final Section section : composition.getSections()) {
             this.visitSection(section);
         }
     }
 
     @Override
     public void visitBar(Bar bar) {
-        for (Beat beat : bar.getBeats()) {
-            this.visitBeat(beat);
+        for (final Beat beat : bar.getBeats()) {
+            if(beat != null) {
+                this.visitBeat(beat);
+            }
+            this.currentBeat += 1;
         }
     }
 
     @Override
     public void visitNote(Note note) {
+        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, 0, 4, 60);
+        ShortMessage upMessage = new ShortMessage();
+        ShortMessage downMessage = new ShortMessage();
+        try {
+            upMessage.setMessage(144, 9, note.getDrumElements().channel, 100);
+            MidiEvent up = new MidiEvent(upMessage, position);
+            this.track.add(up);
+            downMessage.setMessage(128, 9, note.getDrumElements().channel, 100);
+            MidiEvent down = new MidiEvent(downMessage, position + 1);
+            this.track.add(down);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
+
 
     @Override
     public void visitBeat(Beat beat) {
-        //System.out.println(beat.getName());
+        for(final Note note : beat.getNotes()) {
+            this.visitNote(note);
+        }
     }
 
     @Override
     public void visitSection(Section section) {
-        /*for (Bar bar : section.getBar()) {
+        for (Bar bar : section.getBars()) {
             this.visitBar(bar);
-        }*/
+            this.currentBar += 1;
+            this.currentBeat = 0;
+        }
     }
+
 }

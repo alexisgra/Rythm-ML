@@ -15,7 +15,6 @@ import java.util.List;
 @Accessors(
         chain = true
 )
-@RequiredArgsConstructor
 public class Bar extends NamedElement implements VisitableElement {
 
     @EqualsAndHashCode.Exclude
@@ -26,8 +25,9 @@ public class Bar extends NamedElement implements VisitableElement {
     }
 
     public void addBeat(final Beat beat, final int beatNumber) {
-        if(this.beats.length < beatNumber){
+        if(this.beats.length > beatNumber){
             this.beats[beatNumber] = beat;
+            return;
         }
         throw new IllegalArgumentException("Too many beats in the bar " + this.name);
     }

@@ -5,6 +5,7 @@ import fr.unice.polytech.rythmML.kernel.Visitor;
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -15,6 +16,7 @@ import lombok.experimental.Accessors;
 @RequiredArgsConstructor
 public class Note {
 
+    @NonNull
     private DrumsElements drumElements;
 
     public void accept(Visitor v) {

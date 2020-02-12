@@ -9,7 +9,7 @@ import fr.unice.polytech.rythmML.kernel.track.Note;
 public interface Visitor {
     void visitPartition(Partition partition);
 
-    void visitTemporalWire(Composition temporalwire);
+    void visitComposition(Composition composition);
 
     void visitBar(Bar bar);
 
@@ -18,4 +18,5 @@ public interface Visitor {
     void visitBeat(Beat beat);
 
     void visitSection(Section section);
+
 }

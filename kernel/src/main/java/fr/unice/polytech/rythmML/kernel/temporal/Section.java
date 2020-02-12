@@ -1,5 +1,6 @@
 package fr.unice.polytech.rythmML.kernel.temporal;
 
+import fr.unice.polytech.rythmML.kernel.NamedElement;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +15,7 @@ import java.util.List;
         chain = true
 )
 @RequiredArgsConstructor
-public class Section  {
+public class Section extends NamedElement {
     @EqualsAndHashCode.Exclude
     private List<Bar> bars = new ArrayList<>();
 

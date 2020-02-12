@@ -19,7 +19,7 @@ public class Composition {
     private List<Section> sections = new ArrayList<>();
 
     public void accept(Visitor v) {
-        v.visitTemporalWire(this);
+        v.visitComposition(this);
     }
 
     public void addSection(final Section section, final int repeat) {
