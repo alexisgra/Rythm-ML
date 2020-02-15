@@ -14,10 +14,13 @@ import java.util.List;
 		chain = true
 )
 @RequiredArgsConstructor
-public class Tick {
+public class Division {
 
 	@EqualsAndHashCode.Exclude
 	private List<Note> notes = new ArrayList<>();
+
+	@EqualsAndHashCode.Exclude
+	private List<Division> divisions = new ArrayList<>();
 
 	public void addNote(final Note note) {
 		this.notes.add(note);

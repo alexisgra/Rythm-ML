@@ -22,7 +22,7 @@ public class Main {
 		Partition partition = new Partition("LOL");
 		Composition composition = new Composition();
 		Section section = new Section();
-		boolean tick = true;
+		boolean tick = false;
 		Bar bar1 = new Bar(4);
 		Beat beat1 = new Beat();
 		Beat beat2 = new Beat();
@@ -33,17 +33,16 @@ public class Main {
 
 		if (tick) {
 			section.setBeatPerMinutes(120);
-			Tick tick1 = new Tick();
-			tick1.addNote(note2);
+			Division division1 = new Division();
+			division1.addNote(note2);
 
 			beat1.addNote(note);
 			beat1.addNote(note2);
-			beat1.addTick(tick1, 0);
-			beat1.addTick(tick1, 1);
+			beat1.addDivision(division1, 0);
 
 			beat2.addNote(note2);
 			beat2.addNote(note3);
-			beat2.addTick(tick1, 0);
+			beat2.addDivision(division1, 0);
 
 			bar1.addBeat(beat1, 0);
 			bar1.addBeat(beat2, 1);

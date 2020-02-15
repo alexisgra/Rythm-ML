@@ -18,16 +18,16 @@ import java.util.List;
 public class Beat {
 
     @EqualsAndHashCode.Exclude
-    private Tick[] ticks = new Tick[8];
+    private Division[] divisions = new Division[8];
 
     @EqualsAndHashCode.Exclude
     private List<Note> notes = new ArrayList<>();
 
-    public void addTick(final Tick tick, final int tickNumber) {
-        if (tickNumber < 0 || tickNumber >= this.ticks.length) {
+    public void addDivision(final Division division, final int tickNumber) {
+        if (tickNumber < 0 || tickNumber >= this.divisions.length) {
             throw new IllegalArgumentException("Too many ticks in the beat.");
         }
-        this.ticks[tickNumber] = tick;
+        this.divisions[tickNumber] = division;
     }
 
     public void addNote(final Note note) {

@@ -23,7 +23,7 @@ class Bar {
 }
 class Beat {
 }
-class Tick {
+class Division {
 }
 
 
@@ -42,8 +42,8 @@ Partition "1" *--> "1" Composition : composition
 Composition "1" --> "*" Section : sections
 Section "1" --> "*" Bar : bars
 Bar "1" --> "*" Beat : beats
-Beat "1" --> "*" Tick : ticks
+Beat "1" --> "*" Division : divisions
 Beat "*" --> "*" Note : musicNote
-Tick "*" --> "*" Note : musicNote
+Division "*" --> "*" Note : musicNote
 
 @enduml

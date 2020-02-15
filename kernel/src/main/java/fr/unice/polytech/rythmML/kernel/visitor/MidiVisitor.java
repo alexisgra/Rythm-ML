@@ -3,10 +3,7 @@ package fr.unice.polytech.rythmML.kernel.visitor;
 
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.Visitor;
-import fr.unice.polytech.rythmML.kernel.temporal.Bar;
-import fr.unice.polytech.rythmML.kernel.temporal.Beat;
-import fr.unice.polytech.rythmML.kernel.temporal.Composition;
-import fr.unice.polytech.rythmML.kernel.temporal.Section;
+import fr.unice.polytech.rythmML.kernel.temporal.*;
 import fr.unice.polytech.rythmML.kernel.track.Note;
 import fr.unice.polytech.rythmML.kernel.utils.TemporalUtils;
 
@@ -24,6 +21,7 @@ public class MidiVisitor implements Visitor {
     private int currentBeat;
     private int currentBPM;
     private int currentBPB;
+    private double currentDivision;
 
     private Track track;
 
@@ -67,8 +65,8 @@ public class MidiVisitor implements Visitor {
     }
 
     @Override
-    public void visitNote(Note note, double division) {
-        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, division, this.currentBPB, this.currentBPM);
+    public void visitNote(Note note) {
+        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, this.currentDivision, this.currentBPB, this.currentBPM);
         ShortMessage upMessage = new ShortMessage();
         ShortMessage downMessage = new ShortMessage();
         try {
@@ -86,14 +84,23 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitBeat(Beat beat) {
+        this.currentDivision = 0;
         for (final Note note : beat.getNotes()) {
-            this.visitNote(note, 0);
+            this.visitNote(note);
         }
-        long totalTicks = Arrays.stream(beat.getTicks()).filter(Objects::nonNull).count();
-        for (int i = 0; i < totalTicks; i++) {
-            for (Note note : beat.getTicks()[i].getNotes()) {
-                this.visitNote(note, (i + 1.0) / (totalTicks + 1));
-            }
+        long totalDivisions = Arrays.stream(beat.getDivisions()).filter(Objects::nonNull).count();
+        for (int i = 0; i < beat.getDivisions().length; i++) {
+            if (beat.getDivisions()[i] == null) break;
+            this.currentDivision = (i + 1.0) / (totalDivisions + 1);
+            this.visitDivision(beat.getDivisions()[i]);
+        }
+
+    }
+
+    @Override
+    public void visitDivision(Division division) {
+        for (final Note note : division.getNotes()) {
+            this.visitNote(note);
         }
     }
 

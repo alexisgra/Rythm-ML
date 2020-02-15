@@ -18,6 +18,6 @@ public class Note {
     private DrumsElements drumElements;
 
     public void accept(Visitor v) {
-        v.visitNote(this, 0);
+        v.visitNote(this);
     }
 }
