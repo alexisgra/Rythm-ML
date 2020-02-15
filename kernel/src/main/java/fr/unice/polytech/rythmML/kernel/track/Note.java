@@ -1,10 +1,8 @@
 package fr.unice.polytech.rythmML.kernel.track;
 
-import fr.unice.polytech.rythmML.kernel.Main;
 import fr.unice.polytech.rythmML.kernel.Visitor;
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -20,6 +18,6 @@ public class Note {
     private DrumsElements drumElements;
 
     public void accept(Visitor v) {
-        v.visitNote(this);
+        v.visitNote(this, 0);
     }
 }

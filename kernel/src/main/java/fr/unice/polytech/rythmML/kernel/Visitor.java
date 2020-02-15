@@ -13,7 +13,7 @@ public interface Visitor {
 
     void visitBar(Bar bar);
 
-    void visitNote(Note note);
+    void visitNote(Note note, double division);
 
     void visitBeat(Beat beat);
 

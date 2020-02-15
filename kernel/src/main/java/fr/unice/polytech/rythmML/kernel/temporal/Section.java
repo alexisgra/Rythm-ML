@@ -19,12 +19,14 @@ public class Section extends NamedElement {
     @EqualsAndHashCode.Exclude
     private List<Bar> bars = new ArrayList<>();
 
+    private int beatPerMinutes = 60;
+
     public void accept(Visitor v) {
         v.visitSection(this);
     }
 
     public void addBar(final Bar bar, final int repeat) {
-        for (int i = 0; i<repeat; i++){
+        for (int i = 0; i < repeat; i++) {
             this.bars.add(bar);
         }
     }

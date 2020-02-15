@@ -44,7 +44,7 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterInit(RythmMLParser.InitContext ctx) {
-        String bpm = ctx.bpmNumber.getText();
+        int bpm = Integer.parseInt(ctx.bpmNumber.getText());
         this.beatPerBar = Integer.parseInt(ctx.beatPerBar.getText());
         List<TerminalNode> compositions = ctx.IDENTIFIER();
         System.out.println(String.format("bpm %s", bpm));
@@ -52,6 +52,7 @@ public class MusicListener extends RythmMLBaseListener {
         System.out.println("composition");
         for (TerminalNode composition : compositions) {
             Section section = new Section();
+            section.setBeatPerMinutes(bpm);
             section.setName(composition.getSymbol().getText());
             sections.add(section);
             System.out.println(composition.getSymbol().getText());

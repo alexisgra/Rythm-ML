@@ -24,10 +24,10 @@ public class Beat {
     private List<Note> notes = new ArrayList<>();
 
     public void addTick(final Tick tick, final int tickNumber) {
-        if(this.ticks.length < tickNumber){
-            this.ticks[tickNumber] = tick;
+        if (tickNumber < 0 || tickNumber >= this.ticks.length) {
+            throw new IllegalArgumentException("Too many ticks in the beat.");
         }
-        throw new IllegalArgumentException("Too many ticks in the beat.");
+        this.ticks[tickNumber] = tick;
     }
 
     public void addNote(final Note note) {

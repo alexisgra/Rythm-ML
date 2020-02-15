@@ -11,14 +11,19 @@ import fr.unice.polytech.rythmML.kernel.track.Note;
 import fr.unice.polytech.rythmML.kernel.utils.TemporalUtils;
 
 import javax.sound.midi.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class MidiVisitor implements Visitor {
     private static final int DRUM_MIDI_CHANNEL = 9;
     private static final int VELOCITY = 100;
+    private static final int MIDI_RESOLUTION = 120;
     private Sequence sequence;
 
     private int currentBar;
     private int currentBeat;
+    private int currentBPM;
+    private int currentBPB;
 
     private Track track;
 
@@ -27,7 +32,7 @@ public class MidiVisitor implements Visitor {
         System.out.println("-------VISITOR--------");
         System.out.println(partition.getName());
         try {
-            this.sequence = new Sequence(Sequence.PPQ, 120);
+            this.sequence = new Sequence(Sequence.PPQ, MIDI_RESOLUTION);
             this.track = sequence.createTrack();
             this.currentBar = 0;
             this.visitComposition(partition.getComposition());
@@ -45,15 +50,16 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitComposition(Composition composition) {
-        for(final Section section : composition.getSections()) {
+        for (final Section section : composition.getSections()) {
             this.visitSection(section);
         }
     }
 
     @Override
     public void visitBar(Bar bar) {
+        this.currentBPB = bar.getBeats().length;
         for (final Beat beat : bar.getBeats()) {
-            if(beat != null) {
+            if (beat != null) {
                 this.visitBeat(beat);
             }
             this.currentBeat += 1;
@@ -61,8 +67,8 @@ public class MidiVisitor implements Visitor {
     }
 
     @Override
-    public void visitNote(Note note) {
-        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, 0, 4, 60);
+    public void visitNote(Note note, double division) {
+        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, division, this.currentBPB, this.currentBPM);
         ShortMessage upMessage = new ShortMessage();
         ShortMessage downMessage = new ShortMessage();
         try {
@@ -80,13 +86,20 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitBeat(Beat beat) {
-        for(final Note note : beat.getNotes()) {
-            this.visitNote(note);
+        for (final Note note : beat.getNotes()) {
+            this.visitNote(note, 0);
+        }
+        long totalTicks = Arrays.stream(beat.getTicks()).filter(Objects::nonNull).count();
+        for (int i = 0; i < totalTicks; i++) {
+            for (Note note : beat.getTicks()[i].getNotes()) {
+                this.visitNote(note, (i + 1.0) / (totalTicks + 1));
+            }
         }
     }
 
     @Override
     public void visitSection(Section section) {
+        this.currentBPM = section.getBeatPerMinutes();
         for (Bar bar : section.getBars()) {
             this.visitBar(bar);
             this.currentBar += 1;
