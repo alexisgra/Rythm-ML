@@ -29,7 +29,7 @@ class Tick {
 
 
 ' Enum Declaration
-enum Instruments {
+enum DrumsElements {
 
 }
 

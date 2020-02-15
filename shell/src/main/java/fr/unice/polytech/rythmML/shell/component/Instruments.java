@@ -1,6 +1,6 @@
 package fr.unice.polytech.rythmML.shell.component;
+
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
-import fr.unice.polytech.rythmML.shell.visualizer.OpenBrowser;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
@@ -27,7 +27,6 @@ public class Instruments {
 			buffer.append(instru.description);
 			buffer.append(System.lineSeparator());
 		}
-		OpenBrowser.openBrowser();
 		return buffer.toString();
 	}
 

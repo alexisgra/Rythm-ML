@@ -22,12 +22,12 @@ public enum DrumsElements {
 
 	public final String displayName;
 	public final String description;
-	public final int channel;
+	public final int midiNote;
 
-	DrumsElements(final String displayName, final String description, final int channel) {
+	DrumsElements(final String displayName, final String description, final int midiNote) {
 		this.displayName = displayName;
 		this.description = description;
-		this.channel = channel;
+		this.midiNote = midiNote;
 	}
 
 	public static DrumsElements lookupByDisplayName(String name) {

@@ -11,15 +11,17 @@ import fr.unice.polytech.rythmML.kernel.track.Note;
 import fr.unice.polytech.rythmML.kernel.utils.TemporalUtils;
 
 import javax.sound.midi.*;
-import java.time.temporal.TemporalUnit;
 
 public class MidiVisitor implements Visitor {
+    private static final int DRUM_MIDI_CHANNEL = 9;
+    private static final int VELOCITY = 100;
     private Sequence sequence;
 
     private int currentBar;
     private int currentBeat;
 
     private Track track;
+
     @Override
     public void visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
@@ -64,11 +66,11 @@ public class MidiVisitor implements Visitor {
         ShortMessage upMessage = new ShortMessage();
         ShortMessage downMessage = new ShortMessage();
         try {
-            upMessage.setMessage(144, 9, note.getDrumElements().channel, 100);
+            upMessage.setMessage(ShortMessage.NOTE_ON, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, VELOCITY);
             MidiEvent up = new MidiEvent(upMessage, position);
             this.track.add(up);
-            downMessage.setMessage(128, 9, note.getDrumElements().channel, 100);
-            MidiEvent down = new MidiEvent(downMessage, position + 1);
+            downMessage.setMessage(ShortMessage.NOTE_OFF, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, VELOCITY);
+            MidiEvent down = new MidiEvent(downMessage, (position + 1));
             this.track.add(down);
         } catch (Exception ex) {
             ex.printStackTrace();
