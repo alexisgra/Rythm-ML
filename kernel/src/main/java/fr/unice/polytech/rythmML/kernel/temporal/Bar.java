@@ -27,7 +27,7 @@ public class Bar extends NamedElement implements VisitableElement {
             Beat retrievedBeat = this.beats[beatNumber];
             if (retrievedBeat != null) {
                 retrievedBeat.addNotes(beat.getNotes());
-            } else this.beats[beatNumber] = beat;
+            } else this.beats[beatNumber] = new Beat(beat);
             return;
         }
         throw new IllegalArgumentException("Too many beats in the bar " + this.name);

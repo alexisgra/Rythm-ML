@@ -118,7 +118,6 @@ public class MusicListener extends RythmMLBaseListener {
                     }
                 }
             }
-
         }
         if (currentBarOfSection != null) {
             Bar emptyBar = new Bar(beatPerBar);

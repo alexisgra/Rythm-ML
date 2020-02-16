@@ -17,7 +17,7 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-public class Main {
+public class BillieJean {
 	public static void main(String argv[]) {
 		Partition partition = new Partition("LOL");
 		Composition composition = new Composition();
