@@ -33,6 +33,13 @@ public class Bar extends NamedElement implements VisitableElement {
         throw new IllegalArgumentException("Too many beats in the bar " + this.name);
     }
 
+    public Beat getBeat(final int beatNumber) {
+        if (this.beats.length > beatNumber) {
+            return this.beats[beatNumber] == null ? new Beat() : this.beats[beatNumber];
+        }
+        throw new IllegalArgumentException("Too many beats in the bar " + this.name);
+    }
+
     public void accept(Visitor v) {
         v.visitBar(this);
     }

@@ -22,7 +22,7 @@ public class Main {
 		Partition partition = new Partition("LOL");
 		Composition composition = new Composition();
 		Section section = new Section();
-		boolean tick = false;
+		boolean tick = true;
 		Bar bar1 = new Bar(4);
 		Beat beat1 = new Beat();
 		Beat beat2 = new Beat();

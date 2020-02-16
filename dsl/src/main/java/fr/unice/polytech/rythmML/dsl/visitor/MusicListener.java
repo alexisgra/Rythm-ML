@@ -4,6 +4,7 @@ import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
 import fr.unice.polytech.rythmML.kernel.temporal.Beat;
+import fr.unice.polytech.rythmML.kernel.temporal.Division;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.kernel.track.Note;
 import grammar.RythmMLBaseListener;
@@ -21,10 +22,12 @@ public class MusicListener extends RythmMLBaseListener {
     private Beat currentBeat = null;
     private String currentSection = null;
     private DrumsElements currentMusicNote = null;
+    public boolean onBeat = true;
     private String currentBarOfSection = null;
     private List<Section> sections = new ArrayList<>();
     private List<Bar> barsLibrary = new ArrayList<>();
     private int beatPerBar = 0;
+    private Note currentNote = null;
 
     public Partition retrieve() {
         return this.partition;
@@ -61,7 +64,7 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterBar(RythmMLParser.BarContext ctx) {
-        currentBar = new Bar(this.beatPerBar + 4);
+        currentBar = new Bar(this.beatPerBar);
         currentBar.setName(ctx.barName.getText());
         this.barsLibrary.add(currentBar);
         System.out.println(String.format("bar %s", ctx.barName.getText()));
@@ -77,12 +80,14 @@ public class MusicListener extends RythmMLBaseListener {
         System.out.println(String.format("instrument %s", instrument.displayName));
         if (ctx.note.getText().equals("beat")) {
             System.out.println(" on beat");
+            onBeat = true;
         } else if (ctx.note.getText().equals("quarter")) {
             System.out.println(" on quarter");
+            onBeat = false;
         }
         currentMusicNote = instrument;
-        Note note = new Note(currentMusicNote);
-        this.currentBeat.addNote(note);
+        currentNote = new Note(currentMusicNote);
+        this.currentBeat.addNote(currentNote);
     }
 
     @Override
@@ -95,8 +100,25 @@ public class MusicListener extends RythmMLBaseListener {
         List<Integer> nodes = getRealBeatPlacement(ctx.children);
         if (currentMusicNote != null) {
             for (Integer placement : nodes) {
-                currentBar.addBeat(currentBeat, placement - 1);
+                //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
+                int realPlacement = placement - 1;
+                //if it's onBeat it's simple, we add the note to the position
+                if (onBeat) {
+                    currentBar.addBeat(this.currentBeat, realPlacement);
+                } else {
+                    //it's on quarter so if the REAL placement is 0 2 4 6, it means that it's on a beat
+                    if (realPlacement % 2 == 0) {
+                        currentBar.addBeat(this.currentBeat, realPlacement / 2);
+                    } else {
+                        //it's a division, the placement is 1 3 5 7
+                        Division division = new Division();
+                        division.addNote(currentNote);
+                        //we retrieve the beat to add a division to it
+                        this.currentBar.getBeat(realPlacement / 2).addDivision(division, 0);
+                    }
+                }
             }
+
         }
         if (currentBarOfSection != null) {
             Bar emptyBar = new Bar(beatPerBar);
@@ -109,6 +131,7 @@ public class MusicListener extends RythmMLBaseListener {
     @Override
     public void exitMusicNote(RythmMLParser.MusicNoteContext ctx) {
         this.currentMusicNote = null;
+        this.currentNote = null;
     }
 
     @Override

@@ -1,7 +1,7 @@
 partition JohnnyBGoode
 
 grid {
-    bpm 170
+    bpm 80
     bpb 4
     composition {
         intro

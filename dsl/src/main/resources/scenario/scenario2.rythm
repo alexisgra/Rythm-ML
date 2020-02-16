@@ -1,7 +1,7 @@
 partition BillieJean
 
 grid {
-    bpm 170
+    bpm 120
     bpb 4
     composition {
         intro
@@ -41,6 +41,5 @@ section verse1 {
 
 section bridge {
     bar 1-7 mainBar
-    replace bar 2 4 6 7 modifiedBar
     bar 8 endBridge
 }
