@@ -76,7 +76,6 @@ public class MusicListener extends RythmMLBaseListener {
         if (instrument == null) {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
-        this.currentBeat = new Beat();
         System.out.println(String.format("instrument %s", instrument.displayName));
         if (ctx.note.getText().equals("beat")) {
             System.out.println(" on beat");
@@ -87,7 +86,6 @@ public class MusicListener extends RythmMLBaseListener {
         }
         currentMusicNote = instrument;
         currentNote = new Note(currentMusicNote);
-        this.currentBeat.addNote(currentNote);
     }
 
     @Override
@@ -100,6 +98,8 @@ public class MusicListener extends RythmMLBaseListener {
         List<Integer> nodes = getRealBeatPlacement(ctx.children);
         if (currentMusicNote != null) {
             for (Integer placement : nodes) {
+                this.currentBeat = new Beat();
+                this.currentBeat.addNote(currentNote);
                 //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
                 int realPlacement = placement - 1;
                 //if it's onBeat it's simple, we add the note to the position

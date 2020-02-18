@@ -23,13 +23,6 @@ public class Beat {
     @EqualsAndHashCode.Exclude
     private List<Note> notes = new ArrayList<>();
 
-    public Beat(Beat beat) {
-        for (Division division : beat.getDivisions()) {
-            this.addDivision(division, 0);
-        }
-        this.addNotes(beat.getNotes());
-    }
-
     public void addDivision(final Division division, final int tickNumber) {
         if (tickNumber < 0 || tickNumber >= this.divisions.length) {
             throw new IllegalArgumentException("Too many ticks in the beat.");
