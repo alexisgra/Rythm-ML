@@ -8,7 +8,6 @@ import fr.unice.polytech.rythmML.kernel.track.Note;
 import fr.unice.polytech.rythmML.kernel.utils.TemporalUtils;
 
 import javax.sound.midi.*;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MidiVisitor implements Visitor {
@@ -88,11 +87,11 @@ public class MidiVisitor implements Visitor {
         for (final Note note : beat.getNotes()) {
             this.visitNote(note);
         }
-        long totalDivisions = Arrays.stream(beat.getDivisions()).filter(Objects::nonNull).count();
-        for (int i = 0; i < beat.getDivisions().length; i++) {
-            if (beat.getDivisions()[i] == null) break;
+        long totalDivisions = beat.getDivisions().stream().filter(Objects::nonNull).count();
+        for (int i = 0; i < beat.getDivisions().size(); i++) {
+            if (beat.getDivisions().get(i) == null) break;
             this.currentDivision = (i + 1.0) / (totalDivisions + 1);
-            this.visitDivision(beat.getDivisions()[i]);
+            this.visitDivision(beat.getDivisions().get(i));
         }
 
     }

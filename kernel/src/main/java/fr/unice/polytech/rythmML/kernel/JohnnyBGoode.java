@@ -23,11 +23,11 @@ public class JohnnyBGoode {
 
         beat1.addNote(note);
         beat1.addNote(note2);
-        beat1.addDivision(division1, 0);
+        beat1.addDivision(division1);
 
         beat2.addNote(note2);
         beat2.addNote(note3);
-        beat2.addDivision(division1, 0);
+        beat2.addDivision(division1);
 
         bar1.addBeat(beat1, 0);
         bar1.addBeat(beat2, 1);

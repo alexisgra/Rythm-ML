@@ -114,7 +114,7 @@ public class MusicListener extends RythmMLBaseListener {
                         Division division = new Division();
                         division.addNote(currentNote);
                         //we retrieve the beat to add a division to it
-                        this.currentBar.getBeat(realPlacement / 2).addDivision(division, 0);
+                        this.currentBar.getBeat(realPlacement / 2).addDivision(division);
                     }
                 }
             }
