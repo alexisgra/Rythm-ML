@@ -1,5 +1,6 @@
 package fr.unice.polytech.rythmML.dsl.visitor;
 
+import fr.unice.polytech.rythmML.dsl.DivisionEnum;
 import fr.unice.polytech.rythmML.kernel.Partition;
 import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import fr.unice.polytech.rythmML.kernel.temporal.Bar;
@@ -21,13 +22,15 @@ public class MusicListener extends RythmMLBaseListener {
     private Bar currentBar = null;
     private Beat currentBeat = null;
     private String currentSection = null;
+    private boolean waitingForDivision = false;
     private DrumsElements currentMusicNote = null;
-    public boolean onBeat = true;
     private String currentBarOfSection = null;
     private List<Section> sections = new ArrayList<>();
     private List<Bar> barsLibrary = new ArrayList<>();
     private int beatPerBar = 0;
     private Note currentNote = null;
+    private List<Beat> beatsWaitingForDivision = new ArrayList<>();
+    private DivisionEnum divisionEnum = null;
 
     public Partition retrieve() {
         return this.partition;
@@ -72,20 +75,31 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterMusicNote(RythmMLParser.MusicNoteContext ctx) {
+        waitingForDivision = ctx.placement.getText().equals("in");
         DrumsElements instrument = DrumsElements.lookupByDisplayName(ctx.instrument.getText());
         if (instrument == null) {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
         System.out.println(String.format("instrument %s", instrument.displayName));
-        if (ctx.note.getText().equals("beat")) {
-            System.out.println(" on beat");
-            onBeat = true;
-        } else if (ctx.note.getText().equals("quarter")) {
-            System.out.println(" on quarter");
-            onBeat = false;
-        }
         currentMusicNote = instrument;
         currentNote = new Note(currentMusicNote);
+    }
+
+    @Override
+    public void enterMusicNoteWithDivision(RythmMLParser.MusicNoteWithDivisionContext ctx) {
+        System.out.println(ctx.divisionInit().division.getText());
+    }
+
+    @Override
+    public void enterDivisionInit(RythmMLParser.DivisionInitContext ctx) {
+        divisionEnum = DivisionEnum.lookupByDisplayName(ctx.division.getText());
+    }
+
+    @Override
+    public void exitMusicNoteWithDivision(RythmMLParser.MusicNoteWithDivisionContext ctx) {
+        beatsWaitingForDivision = new ArrayList<>();
+        divisionEnum = null;
+        waitingForDivision = false;
     }
 
     @Override
@@ -95,29 +109,34 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterNotes(RythmMLParser.NotesContext ctx) {
+        List<Division> divisions = new ArrayList<>();
         List<Integer> nodes = getRealBeatPlacement(ctx.children);
+        if (waitingForDivision && !beatsWaitingForDivision.isEmpty()) {
+            divisions = fillDivision();
+        }
+        List<Beat> temp = new ArrayList<>();
         if (currentMusicNote != null) {
             for (Integer placement : nodes) {
+                int realPlacement = placement - 1;
                 this.currentBeat = new Beat();
                 this.currentBeat.addNote(currentNote);
                 //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
-                int realPlacement = placement - 1;
-                //if it's onBeat it's simple, we add the note to the position
-                if (onBeat) {
-                    currentBar.addBeat(this.currentBeat, realPlacement);
-                } else {
-                    //it's on quarter so if the REAL placement is 0 2 4 6, it means that it's on a beat
-                    if (realPlacement % 2 == 0) {
-                        currentBar.addBeat(this.currentBeat, realPlacement / 2);
-                    } else {
-                        //it's a division, the placement is 1 3 5 7
-                        Division division = new Division();
-                        division.addNote(currentNote);
-                        //we retrieve the beat to add a division to it
-                        this.currentBar.getBeat(realPlacement / 2).addDivision(division);
+                if (waitingForDivision && beatsWaitingForDivision.isEmpty()) {
+                    temp.add(currentBeat);
+                } else if (waitingForDivision) {
+                    for (Beat beat : beatsWaitingForDivision) {
+                        if (realPlacement == 0) {
+                            currentBar.addBeat(beat, realPlacement);
+                        } else {
+                            divisions.get(realPlacement - 1).addNote(currentNote);
+                            divisions.forEach(beat::addDivision);
+                        }
                     }
+                } else {
+                    currentBar.addBeat(this.currentBeat, realPlacement);
                 }
             }
+            beatsWaitingForDivision.addAll(temp);
         }
         if (currentBarOfSection != null) {
             Bar emptyBar = new Bar(beatPerBar);
@@ -127,10 +146,29 @@ public class MusicListener extends RythmMLBaseListener {
         }
     }
 
-    @Override
-    public void exitMusicNote(RythmMLParser.MusicNoteContext ctx) {
-        this.currentMusicNote = null;
-        this.currentNote = null;
+    private List<Division> fillDivision() {
+        List<Division> divisions = new ArrayList<>();
+        int length;
+        switch (divisionEnum) {
+            case HALF:
+                length = 1;
+                break;
+            case TIERS:
+                length = 2;
+                break;
+            case QUARTER:
+                length = 3;
+                break;
+            case EIGHT:
+                length = 7;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + divisionEnum);
+        }
+        for (int i = 0; i < length; i++) {
+            divisions.add(new Division());
+        }
+        return divisions;
     }
 
     @Override

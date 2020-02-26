@@ -13,18 +13,19 @@ grid                : 'grid {' init '}';
                       'bpb' beatPerBar=NUMBER
                       'composition {' composition=IDENTIFIER+ '}';
 
-bar                 : 'bar' barName=IDENTIFIER '{' musicNote+ '}';
-    musicNote       : instrument=IDENTIFIER 'on' note=('beat'|'quarter') notes;
+bar                 : 'bar' barName=IDENTIFIER '{' (musicNote|musicNoteWithDivision)+ '}';
+    musicNote : instrument=IDENTIFIER placement=('on'|'in') 'beat' notes;
+    musicNoteWithDivision : musicNote divisionInit;
+    divisionInit    : 'on' division=('half'|'tiers'|'quarter'|'eight') notes;
 
 section             : 'section' sectionName=IDENTIFIER '{' barOfSection+ '}';
     barOfSection    : replace='replace'? 'bar' notes barName=IDENTIFIER;
-
 notes: NUMBER+|NUMBER '-' NUMBER;
 
 /*****************
  ** Lexer rules **
  *****************/
-IDENTIFIER: (LOWERCASE|UPPERCASE) (LOWERCASE|UPPERCASE|DIGIT)+;
+IDENTIFIER: (LOWERCASE|UPPERCASE) (LOWERCASE|UPPERCASE|DIGIT)+; // 2 letters minimum
 NUMBER: DIGIT+;
 
 /*************
