@@ -1,7 +1,7 @@
 partition JohnnyBGoode
 
 grid {
-    bpm 120
+    bpm 170
     bpb 4
     composition {
         intro
@@ -15,7 +15,7 @@ grid {
 bar mainBar {
     bd on beat 1 3
     sd on beat 2 4
-    rc in beat 1 3 on quarter 1-4
+    rc in beat 1-4 on half 1-2
 }
 
 section intro {

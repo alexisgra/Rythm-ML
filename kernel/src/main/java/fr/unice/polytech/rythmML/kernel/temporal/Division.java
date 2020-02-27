@@ -23,6 +23,7 @@ public class Division {
 	private List<Division> divisions = new ArrayList<>();
 
 	public void addNote(final Note note) {
-		this.notes.add(note);
+		if (!notes.contains(note))
+			this.notes.add(note);
 	}
 }

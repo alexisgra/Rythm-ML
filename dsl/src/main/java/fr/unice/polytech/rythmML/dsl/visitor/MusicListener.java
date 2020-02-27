@@ -13,9 +13,7 @@ import grammar.RythmMLParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class MusicListener extends RythmMLBaseListener {
     private Partition partition = null;
@@ -23,13 +21,12 @@ public class MusicListener extends RythmMLBaseListener {
     private Beat currentBeat = null;
     private String currentSection = null;
     private boolean waitingForDivision = false;
-    private DrumsElements currentMusicNote = null;
     private String currentBarOfSection = null;
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sectionsLibrary = new ArrayList<>();
     private List<Bar> barsLibrary = new ArrayList<>();
     private int beatPerBar = 0;
     private Note currentNote = null;
-    private List<Beat> beatsWaitingForDivision = new ArrayList<>();
+    private Map<Integer, Beat> beatsWaitingForDivisionPosition = new HashMap<>();
     private DivisionEnum divisionEnum = null;
 
     public Partition retrieve() {
@@ -45,7 +42,7 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void exitPartition(RythmMLParser.PartitionContext ctx) {
-        partition.getComposition().setSections(sections);
+        partition.getComposition().setSections(sectionsLibrary);
     }
 
     @Override
@@ -60,7 +57,7 @@ public class MusicListener extends RythmMLBaseListener {
             Section section = new Section();
             section.setBeatPerMinutes(bpm);
             section.setName(composition.getSymbol().getText());
-            sections.add(section);
+            sectionsLibrary.add(section);
             System.out.println(composition.getSymbol().getText());
         }
     }
@@ -81,23 +78,18 @@ public class MusicListener extends RythmMLBaseListener {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
         System.out.println(String.format("instrument %s", instrument.displayName));
-        currentMusicNote = instrument;
-        currentNote = new Note(currentMusicNote);
-    }
-
-    @Override
-    public void enterMusicNoteWithDivision(RythmMLParser.MusicNoteWithDivisionContext ctx) {
-        System.out.println(ctx.divisionInit().division.getText());
+        currentNote = new Note(instrument);
     }
 
     @Override
     public void enterDivisionInit(RythmMLParser.DivisionInitContext ctx) {
+        System.out.println(ctx.division.getText());
         divisionEnum = DivisionEnum.lookupByDisplayName(ctx.division.getText());
     }
 
     @Override
     public void exitMusicNoteWithDivision(RythmMLParser.MusicNoteWithDivisionContext ctx) {
-        beatsWaitingForDivision = new ArrayList<>();
+        beatsWaitingForDivisionPosition = new HashMap<>();
         divisionEnum = null;
         waitingForDivision = false;
     }
@@ -111,32 +103,35 @@ public class MusicListener extends RythmMLBaseListener {
     public void enterNotes(RythmMLParser.NotesContext ctx) {
         List<Division> divisions = new ArrayList<>();
         List<Integer> nodes = getRealBeatPlacement(ctx.children);
-        if (waitingForDivision && !beatsWaitingForDivision.isEmpty()) {
+        if (waitingForDivision && !beatsWaitingForDivisionPosition.isEmpty()) {
             divisions = fillDivision();
         }
-        List<Beat> temp = new ArrayList<>();
-        if (currentMusicNote != null) {
+        Map<Integer, Beat> temp = new HashMap<>();
+        if (currentBar != null) {
             for (Integer placement : nodes) {
                 int realPlacement = placement - 1;
                 this.currentBeat = new Beat();
                 this.currentBeat.addNote(currentNote);
                 //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
-                if (waitingForDivision && beatsWaitingForDivision.isEmpty()) {
-                    temp.add(currentBeat);
+                if (waitingForDivision && beatsWaitingForDivisionPosition.isEmpty()) {
+                    temp.put(realPlacement, currentBeat);
                 } else if (waitingForDivision) {
-                    for (Beat beat : beatsWaitingForDivision) {
+                    for (Map.Entry<Integer, Beat> entry : beatsWaitingForDivisionPosition.entrySet()) {
+                        Beat beat = entry.getValue();
+                        Integer position = entry.getKey();
                         if (realPlacement == 0) {
-                            currentBar.addBeat(beat, realPlacement);
+                            currentBar.addBeat(beat, position);
                         } else {
                             divisions.get(realPlacement - 1).addNote(currentNote);
-                            divisions.forEach(beat::addDivision);
+                            //divisions.forEach(beat::addDivision);
+                            currentBar.getBeat(position).setDivisions(divisions);
                         }
                     }
                 } else {
                     currentBar.addBeat(this.currentBeat, realPlacement);
                 }
             }
-            beatsWaitingForDivision.addAll(temp);
+            beatsWaitingForDivisionPosition.putAll(temp);
         }
         if (currentBarOfSection != null) {
             Bar emptyBar = new Bar(beatPerBar);
@@ -184,7 +179,6 @@ public class MusicListener extends RythmMLBaseListener {
             System.out.println("replace");
         }
         String barName = ctx.barName.getText();
-        // todo : change this
         currentBarOfSection = barName;
         System.out.println(String.format("barName %s", barName));
     }
@@ -209,7 +203,7 @@ public class MusicListener extends RythmMLBaseListener {
     }
 
     private Section getSectionFromLibraryByName(String name) {
-        for (Section section : sections) {
+        for (Section section : sectionsLibrary) {
             if (section.getName().equals(name)) {
                 return section;
             }
