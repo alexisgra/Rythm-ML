@@ -8,7 +8,7 @@ public class TemporalUtils {
     }
 
     public static int toTime(final int bar, final int beat, final double division, final int nbBeatPerBar, final int bpm) {
-        double ticksPerSecond = MIDI_RESOLUTION * 60.0 / bpm;
+        double ticksPerSecond = MIDI_RESOLUTION * 120.0 / bpm;
         int pos = bar * nbBeatPerBar;
         pos += beat;
         pos += division;

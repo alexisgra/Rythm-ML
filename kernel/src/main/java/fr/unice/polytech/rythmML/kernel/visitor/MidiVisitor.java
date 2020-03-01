@@ -13,7 +13,7 @@ import java.util.Objects;
 public class MidiVisitor implements Visitor {
     private static final int DRUM_MIDI_CHANNEL = 9;
     private static final int VELOCITY = 100;
-    public static final int MIDI_RESOLUTION = 120;
+    public static final int MIDI_RESOLUTION = 100;
     private Sequence sequence;
 
     private int currentBar;
