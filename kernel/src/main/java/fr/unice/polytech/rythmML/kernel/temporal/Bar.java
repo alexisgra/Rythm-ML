@@ -18,19 +18,28 @@ public class Bar extends NamedElement implements VisitableElement {
     @EqualsAndHashCode.Exclude
     private Beat[] beats;
 
-    public Bar (final int beatNumber){
+    public Bar(final int beatNumber) {
         this.beats = new Beat[beatNumber];
     }
 
-    public void addBeat(final Beat beat, final int beatNumber) {
-        if(this.beats.length > beatNumber){
-            Beat retrievedBeat = this.beats[beatNumber];
-            if (retrievedBeat != null) {
-                retrievedBeat.addNotes(beat.getNotes());
-            } else this.beats[beatNumber] = beat;
-            return;
+    public Bar(Bar bar) {
+        this.beats = new Beat[bar.beats.length];
+        for (int i = 0; i < this.beats.length; i++) {
+            this.beats[i] = new Beat(bar.beats[i]);
         }
-        throw new IllegalArgumentException("Too many beats in the bar " + this.name);
+    }
+
+    public void addBeat(final Beat beat, final int beatNumber) {
+        if (beatNumber < 0 || beatNumber > this.beats.length) {
+            throw new IllegalArgumentException("Too many beats in the bar " + this.name);
+        }
+
+        Beat retrievedBeat = this.beats[beatNumber];
+        if (retrievedBeat != null) {
+            retrievedBeat.addNotes(beat.getNotes());
+        } else {
+            this.beats[beatNumber] = beat;
+        }
     }
 
     public Beat getBeat(final int beatNumber) {

@@ -17,6 +17,10 @@ public class Note {
     @NonNull
     private DrumsElements drumElements;
 
+    public Note(Note note) {
+        this.drumElements = note.getDrumElements();
+    }
+
     public void accept(Visitor v) {
         v.visitNote(this);
     }

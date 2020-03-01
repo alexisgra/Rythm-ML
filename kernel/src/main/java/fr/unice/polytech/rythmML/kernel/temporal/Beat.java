@@ -23,6 +23,11 @@ public class Beat {
     @EqualsAndHashCode.Exclude
     private List<Note> notes = new ArrayList<>();
 
+    public Beat(Beat beat) {
+        beat.getDivisions().forEach(division -> divisions.add(new Division(division)));
+        beat.getNotes().forEach(note -> notes.add(new Note(note)));
+    }
+
     public void addDivision(final Division division) {
         this.divisions.add(division);
     }

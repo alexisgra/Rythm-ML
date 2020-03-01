@@ -8,16 +8,16 @@ import fr.unice.polytech.rythmML.kernel.visitor.MidiVisitor;
 public class JohnnyBGoode {
     public static void main(String[] args) {
 
-        Partition partition = new Partition("LOL");
+        Partition partition = new Partition("JohnnyBGoode");
         Composition composition = new Composition();
         Section section = new Section();
         Bar bar1 = new Bar(4);
         Beat beat1 = new Beat();
         Beat beat2 = new Beat();
         Note note = new Note(DrumsElements.BASS_DRUM);
-        Note note2 = new Note(DrumsElements.RIDE_SYMBAL);
+        Note note2 = new Note(DrumsElements.RIDE_CYMBAL);
         Note note3 = new Note(DrumsElements.SNARE_DRUM);
-        section.setBeatPerMinutes(120);
+        section.setBeatPerMinutes(170);
         Division division1 = new Division();
         division1.addNote(note2);
 

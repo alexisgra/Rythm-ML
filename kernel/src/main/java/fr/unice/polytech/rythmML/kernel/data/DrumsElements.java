@@ -9,7 +9,7 @@ public enum DrumsElements {
 	CLOSED_HITHAT("ch", "closed hihat", 42),
 	OPENED_HITHAT("oh", "opened hihat", 46),
 	CRASH_SYMBAL("cc", "crash cymbal", 49),
-	RIDE_SYMBAL("rc", "ride cymbal", 51);
+	RIDE_CYMBAL("rc", "ride cymbal", 51);
 
 
 	private static final Map<String, DrumsElements> displayNameIndex = new HashMap<>();
