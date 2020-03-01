@@ -13,7 +13,7 @@ import java.util.Objects;
 public class MidiVisitor implements Visitor {
     private static final int DRUM_MIDI_CHANNEL = 9;
     private static final int VELOCITY = 100;
-    private static final int MIDI_RESOLUTION = 120;
+    public static final int MIDI_RESOLUTION = 120;
     private Sequence sequence;
 
     private int currentBar;
@@ -65,7 +65,7 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitNote(Note note) {
-        final int position = TemporalUtils.toTime(this.currentBar, this.currentBeat, this.currentDivision, this.currentBPB, this.currentBPM);
+        final long position = TemporalUtils.toTime(this.currentBar, this.currentBeat, this.currentDivision, this.currentBPB, this.currentBPM);
         ShortMessage upMessage = new ShortMessage();
         ShortMessage downMessage = new ShortMessage();
         try {
