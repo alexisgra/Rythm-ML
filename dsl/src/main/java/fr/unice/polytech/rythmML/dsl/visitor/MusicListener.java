@@ -29,6 +29,11 @@ public class MusicListener extends RythmMLBaseListener {
     private Map<Integer, Beat> beatsWaitingForDivisionPosition = new HashMap<>();
     private DivisionEnum divisionEnum = null;
 
+
+    //variation variables
+    private boolean isVariationStep = false;
+    private List<Integer> notesPosition = new ArrayList<>();
+
     public Partition retrieve() {
         return this.partition;
     }
@@ -85,6 +90,33 @@ public class MusicListener extends RythmMLBaseListener {
     public void enterDivisionInit(RythmMLParser.DivisionInitContext ctx) {
         System.out.println(ctx.division.getText());
         divisionEnum = DivisionEnum.lookupByDisplayName(ctx.division.getText());
+        for (Integer placement : notesPosition) {
+            //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
+            int realPlacement = placement - 1;
+            Beat beat = new Beat();
+            beat.addNote(currentNote);
+            beatsWaitingForDivisionPosition.put(realPlacement, beat);
+        }
+        notesPosition = new ArrayList<>();
+    }
+
+    @Override
+    public void exitDivisionInit(RythmMLParser.DivisionInitContext ctx) {
+        List<Division> divisions = fillDivision();
+        for (Integer placement : notesPosition) {
+            int realPlacement = placement - 1;
+            for (Map.Entry<Integer, Beat> entry : beatsWaitingForDivisionPosition.entrySet()) {
+                Beat beat = entry.getValue();
+                Integer position = entry.getKey();
+                if (realPlacement == 0) {
+                    currentBar.addBeat(beat, position);
+                } else {
+                    divisions.get(realPlacement - 1).addNote(currentNote);
+                    //divisions.forEach(beat::addDivision);
+                    currentBar.getBeat(position).setDivisions(divisions);
+                }
+            }
+        }
     }
 
     @Override
@@ -95,52 +127,43 @@ public class MusicListener extends RythmMLBaseListener {
     }
 
     @Override
+    public void exitMusicNote(RythmMLParser.MusicNoteContext ctx) {
+        if (currentBar != null && !waitingForDivision) {
+            for (Integer placement : notesPosition) {
+                //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
+                int realPlacement = placement - 1;
+                this.currentBeat = new Beat();
+                this.currentBeat.addNote(currentNote);
+                currentBar.addBeat(this.currentBeat, realPlacement);
+            }
+            notesPosition = new ArrayList<>();
+        }
+    }
+
+    @Override
     public void exitBar(RythmMLParser.BarContext ctx) {
         currentBar = null;
     }
 
     @Override
     public void enterNotes(RythmMLParser.NotesContext ctx) {
-        List<Division> divisions = new ArrayList<>();
-        List<Integer> nodes = getRealBeatPlacement(ctx.children);
-        if (waitingForDivision && !beatsWaitingForDivisionPosition.isEmpty()) {
-            divisions = fillDivision();
-        }
-        Map<Integer, Beat> temp = new HashMap<>();
-        if (currentBar != null) {
-            for (Integer placement : nodes) {
-                int realPlacement = placement - 1;
-                this.currentBeat = new Beat();
-                this.currentBeat.addNote(currentNote);
-                //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
-                if (waitingForDivision && beatsWaitingForDivisionPosition.isEmpty()) {
-                    temp.put(realPlacement, currentBeat);
-                } else if (waitingForDivision) {
-                    for (Map.Entry<Integer, Beat> entry : beatsWaitingForDivisionPosition.entrySet()) {
-                        Beat beat = entry.getValue();
-                        Integer position = entry.getKey();
-                        if (realPlacement == 0) {
-                            currentBar.addBeat(beat, position);
-                        } else {
-                            divisions.get(realPlacement - 1).addNote(currentNote);
-                            //divisions.forEach(beat::addDivision);
-                            currentBar.getBeat(position).setDivisions(divisions);
-                        }
+        boolean concernsMultipleNumber = false;
+        for (ParseTree parseTree : ctx.children) {
+            if (parseTree.getText().equals("-")) {
+                concernsMultipleNumber = true;
+            } else {
+                if (concernsMultipleNumber) {
+                    for (int i = notesPosition.get(notesPosition.size() - 1) + 1; i <= Integer.parseInt(parseTree.getText()); i++) {
+                        notesPosition.add(i);
                     }
+                    concernsMultipleNumber = false;
                 } else {
-                    currentBar.addBeat(this.currentBeat, realPlacement);
+                    notesPosition.add(Integer.parseInt(parseTree.getText()));
                 }
             }
-            beatsWaitingForDivisionPosition.putAll(temp);
         }
-        if (currentBarOfSection != null) {
-            Bar emptyBar = new Bar(beatPerBar);
-            emptyBar.setName("emptyBar");
-            getSectionFromLibraryByName(currentSection).addBar(emptyBar, nodes.get(0) - 1);
-            getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), nodes.size());
-        }
+        Collections.sort(notesPosition);
     }
-
     private List<Division> fillDivision() {
         List<Division> divisions = new ArrayList<>();
         int length;
@@ -185,7 +208,12 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void exitBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
+        Bar emptyBar = new Bar(beatPerBar);
+        emptyBar.setName("emptyBar");
+        getSectionFromLibraryByName(currentSection).addBar(emptyBar, notesPosition.get(0) - 1);
+        getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
         currentBarOfSection = null;
+        notesPosition = new ArrayList<>();
     }
 
     @Override
@@ -211,31 +239,23 @@ public class MusicListener extends RythmMLBaseListener {
         throw new IllegalArgumentException("this section " + name + " has not been defined before");
     }
 
-
-    /**
-     * This can be refactored
-     *
-     * @param children list of parsed music notes, ex1:(6 - 13) ex2:(2 4 5 6)
-     * @return the list with all the numbers of beat placement, ex1: (6 7 8 9 10 11 12 13) ex2:(2 4 5 6)
-     */
-    private List<Integer> getRealBeatPlacement(List<ParseTree> children) {
-        List<Integer> integerList = new ArrayList<>();
-        boolean concernsMultipleNumber = false;
-        for (ParseTree parseTree : children) {
-            if (parseTree.getText().equals("-")) {
-                concernsMultipleNumber = true;
-            } else {
-                if (concernsMultipleNumber) {
-                    for (int i = integerList.get(integerList.size() - 1) + 1; i <= Integer.parseInt(parseTree.getText()); i++) {
-                        integerList.add(i);
-                    }
-                    concernsMultipleNumber = false;
-                } else {
-                    integerList.add(Integer.parseInt(parseTree.getText()));
-                }
-            }
-        }
-        Collections.sort(integerList);
-        return integerList;
+   /* @Override
+    public void enterDelays(RythmMLParser.DelaysContext ctx) {
+        beatsPosition.forEach(beatPos -> currentBar.getBeat(beatPos - 1).getNotes().forEach(note -> note.));
     }
+
+    @Override
+    public void enterVelocity(RythmMLParser.VelocityContext ctx) {
+        isVariationStep = true;
+    }
+
+    @Override
+    public void enterVariations(RythmMLParser.VariationsContext ctx) {
+        System.out.println();
+        if (isVariationStep) {
+            notesPosition.addAll(nodes);
+            return;
+        }
+    }*/
+
 }
