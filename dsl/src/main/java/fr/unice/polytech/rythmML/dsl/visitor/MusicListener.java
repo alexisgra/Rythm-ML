@@ -25,13 +25,10 @@ public class MusicListener extends RythmMLBaseListener {
     private List<Section> sectionsLibrary = new ArrayList<>();
     private List<Bar> barsLibrary = new ArrayList<>();
     private int beatPerBar = 0;
-    private Note currentNote = null;
+    private DrumsElements currentInstrument = null;
     private Map<Integer, Beat> beatsWaitingForDivisionPosition = new HashMap<>();
     private DivisionEnum divisionEnum = null;
-
-
-    //variation variables
-    private boolean isVariationStep = false;
+    private boolean replaceMode = false;
     private List<Integer> notesPosition = new ArrayList<>();
 
     public Partition retrieve() {
@@ -83,7 +80,7 @@ public class MusicListener extends RythmMLBaseListener {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
         System.out.println(String.format("instrument %s", instrument.displayName));
-        currentNote = new Note(instrument);
+        currentInstrument = instrument;
     }
 
     @Override
@@ -94,7 +91,7 @@ public class MusicListener extends RythmMLBaseListener {
             //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
             int realPlacement = placement - 1;
             Beat beat = new Beat();
-            beat.addNote(currentNote);
+            beat.addNote(new Note(currentInstrument));
             beatsWaitingForDivisionPosition.put(realPlacement, beat);
         }
         notesPosition = new ArrayList<>();
@@ -111,12 +108,13 @@ public class MusicListener extends RythmMLBaseListener {
                 if (realPlacement == 0) {
                     currentBar.addBeat(beat, position);
                 } else {
-                    divisions.get(realPlacement - 1).addNote(currentNote);
+                    divisions.get(realPlacement - 1).addNote(new Note(currentInstrument));
                     //divisions.forEach(beat::addDivision);
                     currentBar.getBeat(position).setDivisions(divisions);
                 }
             }
         }
+        notesPosition = new ArrayList<>();
     }
 
     @Override
@@ -133,7 +131,7 @@ public class MusicListener extends RythmMLBaseListener {
                 //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
                 int realPlacement = placement - 1;
                 this.currentBeat = new Beat();
-                this.currentBeat.addNote(currentNote);
+                this.currentBeat.addNote(new Note(currentInstrument));
                 currentBar.addBeat(this.currentBeat, realPlacement);
             }
             notesPosition = new ArrayList<>();
@@ -164,6 +162,7 @@ public class MusicListener extends RythmMLBaseListener {
         }
         Collections.sort(notesPosition);
     }
+
     private List<Division> fillDivision() {
         List<Division> divisions = new ArrayList<>();
         int length;
@@ -198,9 +197,7 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
-        if (ctx.replace != null) {
-            System.out.println("replace");
-        }
+        replaceMode = ctx.replace != null;
         String barName = ctx.barName.getText();
         currentBarOfSection = barName;
         System.out.println(String.format("barName %s", barName));
@@ -208,12 +205,19 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void exitBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
-        Bar emptyBar = new Bar(beatPerBar);
-        emptyBar.setName("emptyBar");
-        getSectionFromLibraryByName(currentSection).addBar(emptyBar, notesPosition.get(0) - 1);
-        getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
+        if (replaceMode) {
+            for (Integer barIndex : notesPosition) {
+                getSectionFromLibraryByName(currentSection).replaceBar(getBarFromLibraryByName(currentBarOfSection), barIndex);
+            }
+        } else {
+            Bar emptyBar = new Bar(beatPerBar);
+            emptyBar.setName("emptyBar");
+            getSectionFromLibraryByName(currentSection).addBar(emptyBar, notesPosition.get(0) - 1);
+            getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
+        }
         currentBarOfSection = null;
         notesPosition = new ArrayList<>();
+        replaceMode = false;
     }
 
     @Override
@@ -239,23 +243,35 @@ public class MusicListener extends RythmMLBaseListener {
         throw new IllegalArgumentException("this section " + name + " has not been defined before");
     }
 
-   /* @Override
+
+    @Override
     public void enterDelays(RythmMLParser.DelaysContext ctx) {
-        beatsPosition.forEach(beatPos -> currentBar.getBeat(beatPos - 1).getNotes().forEach(note -> note.));
+        Integer minInterval = null;
+        Integer maxInterval = null;
+        for (ParseTree parseTree : ctx.children) {
+            if (!parseTree.getText().equals("..")) {
+                if (minInterval == null) {
+                    minInterval = Integer.parseInt(parseTree.getText());
+                } else {
+                    maxInterval = Integer.parseInt(parseTree.getText());
+                }
+            }
+        }
+        Integer finalMinInterval = minInterval;
+        Integer finalMaxInterval = maxInterval;
+        notesPosition.forEach(beatPos -> currentBar.getBeat(beatPos - 1).getNotes().forEach(note -> {
+            note.setMinInterval(finalMinInterval);
+            note.setMaxInterval(finalMaxInterval);
+        }));
     }
 
     @Override
     public void enterVelocity(RythmMLParser.VelocityContext ctx) {
-        isVariationStep = true;
+        notesPosition.forEach(beatPos -> currentBar.getBeat(beatPos - 1).getNotes().forEach(note -> note.setVelocity(Integer.parseInt(ctx.velocityNumber.getText()))));
     }
 
     @Override
-    public void enterVariations(RythmMLParser.VariationsContext ctx) {
-        System.out.println();
-        if (isVariationStep) {
-            notesPosition.addAll(nodes);
-            return;
-        }
-    }*/
-
+    public void exitVariations(RythmMLParser.VariationsContext ctx) {
+        notesPosition = new ArrayList<>();
+    }
 }

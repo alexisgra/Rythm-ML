@@ -30,4 +30,8 @@ public class Section extends NamedElement {
             this.bars.add(bar);
         }
     }
+
+    public void replaceBar(final Bar bar, final int index) {
+        this.bars.set(index - 1, bar);
+    }
 }
