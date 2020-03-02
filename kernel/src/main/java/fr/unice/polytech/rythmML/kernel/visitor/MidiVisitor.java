@@ -37,6 +37,7 @@ public class MidiVisitor implements Visitor {
             Sequencer sequencer = MidiSystem.getSequencer();
             sequencer.open();
             sequencer.setSequence(this.sequence);
+            sequencer.setTempoInBPM(this.currentBPM);
             sequencer.start();
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
