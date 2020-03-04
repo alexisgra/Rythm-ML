@@ -19,7 +19,7 @@ public class Note {
     @NonNull
     private DrumsElements drumElements;
 
-    private Integer velocity;
+    private Integer velocity = 100;
     private Integer minInterval = null;
     private Integer maxInterval = null;
     public Note(Note note) {
