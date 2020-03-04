@@ -1,5 +1,9 @@
 package fr.unice.polytech.rythmML.shell.visualizer;
 
+import fr.unice.polytech.rythmML.shell.WorkspaceConfig;
+
+import java.io.File;
+
 public class OpenBrowser {
 
 		public static void openBrowser() {
@@ -16,7 +20,7 @@ public class OpenBrowser {
 
 				} else if (os.indexOf( "mac" ) >= 0) {
 
-					rt.exec( "open " + "file:///Users/alexissegura/Documents/SI5/DSL/Rythml-ML/Rythm-ML/index.html");
+					rt.exec( "open " + "file://" + new File(WorkspaceConfig.DIRECTORY + "/index.html").getAbsolutePath());
 
 				} else if (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0) {
 

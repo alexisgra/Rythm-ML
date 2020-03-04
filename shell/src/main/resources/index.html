@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>🎹</title>
+
+  <!-- Web components polyfill -->
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
+
+  <!-- load magenta.js -->
+  <script src="https://unpkg.com/@magenta/music@1.1.9/dist/magentamusic.js"></script>
+
+  <!-- Load the web component-->
+  <script src="midi-visualizer.js"></script>
+
+  <!-- Make the demo pretty-->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" rel="stylesheet">
+  <link href="./styles.css" rel="stylesheet">
+</head>
+<body>
+<h1>Piano midi visualizer</h1>
+<p>(the darker the note, the louder it is -- i.e. the higher its strike velocity)</p>
+<midi-visualizer
+        id="visualizer"
+        url="http://localhost:8080/get-file">
+</midi-visualizer>
+
+<footer>
+  made with 🎧 by <a href="https://twitter.com/notwaldorf">monica</a>.
+</footer>
+
+<script>
+  // Set up some event listeners
+  tempoInput.addEventListener('change', () => visualizer.tempo = tempoInput.value);
+  playBtn.addEventListener('click', () => startOrStop());
+  visualizer.addEventListener('visualizer-ready', () => {
+    tempoInput.value = visualizer.tempo;
+  playBtn.disabled = false;
+  playBtn.textContent = 'play';
+  });
+
+  function loadFile(e) {
+    const file = e.target.files[0];
+    visualizer.loadFile(file);
+
+    return false;
+  }
+
+  function startOrStop() {
+    if (visualizer.isPlaying()) {
+      visualizer.stop();
+      playBtn.textContent = 'play';
+    } else {
+      visualizer.tempo = tempoInput.value;
+      visualizer.start();
+      playBtn.textContent = 'stop';
+    }
+  }
+</script>
+<div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+<script src="https://button.glitch.me/button.js"></script>
+</body>
+</html>

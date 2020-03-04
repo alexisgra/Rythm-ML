@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <!-- Web components polyfill, so this works on all browsers -->
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
+
+  <!-- Load magenta.js, which is needed by the element. -->
+  <script src="https://unpkg.com/@magenta/music@1.1.9/dist/magentamusic.js"></script>
+
+  <!-- Load the web component itself -->
+  <script src="midi-visualizer.js"></script>
+  </head>
+  <body>
+
+  <!-- Use the web component! -->
+  <midi-visualizer
+  id="visualizer"
+  url="http://localhost:8080/get-file">
+  </midi-visualizer>
+  <script>
+    // Set up some event listeners
+    tempoInput.addEventListener('change', () => visualizer.tempo = tempoInput.value);
+    playBtn.addEventListener('click', () => startOrStop());
+    visualizer.addEventListener('visualizer-ready', () => {
+      tempoInput.value = visualizer.tempo;
+      playBtn.disabled = false;
+      playBtn.textContent = 'play';
+    });
+
+    function loadFile(e) {
+      const file = e.target.files[0];
+      visualizer.loadFile(file);
+      return false;
+    }
+
+    function startOrStop() {
+      if (visualizer.isPlaying()) {
+        visualizer.stop();
+        playBtn.textContent = 'play';
+      } else {
+        visualizer.tempo = tempoInput.value;
+        visualizer.start();
+        playBtn.textContent = 'stop';
+      }
+    }
+  </script>
+  <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+  <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

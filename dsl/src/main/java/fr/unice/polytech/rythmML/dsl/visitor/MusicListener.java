@@ -32,6 +32,9 @@ public class MusicListener extends RythmMLBaseListener {
     private List<Integer> notesPosition = new ArrayList<>();
 
     public Partition retrieve() {
+        for(final Section section : sectionsLibrary) {
+            this.partition.getSectionLibrary().addSection(section);
+        }
         return this.partition;
     }
 
