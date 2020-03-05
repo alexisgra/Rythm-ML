@@ -24,7 +24,7 @@ public class FileController {
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
 	)
 	public @ResponseBody byte[] getFile() throws IOException {
-		InputStream in = new FileInputStream(WorkspaceConfig.DIRECTORY + "/tmp.mid");
+		InputStream in = new FileInputStream(WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
 		System.out.println("Current relative path is: " + s);

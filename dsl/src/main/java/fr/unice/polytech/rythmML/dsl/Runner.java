@@ -9,16 +9,17 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import javax.sound.midi.Sequencer;
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class Runner {
 
-    // TODO: 05/02/2020 Change return to MIDI File
     void run(Path pathFile) throws Exception {
         CharStream stream = getCharStream(pathFile);
         Partition partition = buildModel(stream);
-        partition.generateMIDI();
+        Sequencer sequencer = partition.generateMIDI();
+        sequencer.start();
     }
 
     public CharStream getCharStream(Path input) throws IOException {

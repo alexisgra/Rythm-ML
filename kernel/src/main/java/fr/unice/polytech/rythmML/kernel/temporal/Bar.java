@@ -23,9 +23,14 @@ public class Bar extends NamedElement implements VisitableElement {
     }
 
     public Bar(Bar bar) {
+        this.name = bar.getName();
         this.beats = new Beat[bar.beats.length];
         for (int i = 0; i < this.beats.length; i++) {
-            this.beats[i] = new Beat(bar.beats[i]);
+            if (bar.beats[i] == null) {
+                this.beats[i] = null;
+            } else {
+                this.beats[i] = new Beat(bar.beats[i]);
+            }
         }
     }
 

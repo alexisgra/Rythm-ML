@@ -25,7 +25,7 @@ public class MidiVisitor implements Visitor {
     private Track track;
 
     @Override
-    public Sequence visitPartition(Partition partition) {
+    public Sequencer visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
         System.out.println(partition.getName());
         try {
@@ -38,9 +38,8 @@ public class MidiVisitor implements Visitor {
             sequencer.open();
             sequencer.setSequence(this.sequence);
             sequencer.setTempoInBPM(this.currentBPM);
-            //sequencer.start();
 
-            return sequence;
+            return sequencer;
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         } catch (MidiUnavailableException e) {
@@ -69,14 +68,14 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public void visitNote(Note note) {
-        final long position = TemporalUtils.toTime(this.currentBar, this.currentBeat, this.currentDivision, this.currentBPB, this.currentBPM);
+        final long position = TemporalUtils.toTime(this.currentBar, this.currentBeat, this.currentDivision, this.currentBPB, this.currentBPM, note.getDelay());
         ShortMessage upMessage = new ShortMessage();
         ShortMessage downMessage = new ShortMessage();
         try {
-            upMessage.setMessage(ShortMessage.NOTE_ON, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, VELOCITY);
+            upMessage.setMessage(ShortMessage.NOTE_ON, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, note.getVelocity());
             MidiEvent up = new MidiEvent(upMessage, position);
             this.track.add(up);
-            downMessage.setMessage(ShortMessage.NOTE_OFF, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, VELOCITY);
+            downMessage.setMessage(ShortMessage.NOTE_OFF, DRUM_MIDI_CHANNEL, note.getDrumElements().midiNote, note.getVelocity());
             MidiEvent down = new MidiEvent(downMessage, (position + 1));
             this.track.add(down);
         } catch (Exception ex) {

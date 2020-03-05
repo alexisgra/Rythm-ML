@@ -22,8 +22,8 @@ public class MusicListener extends RythmMLBaseListener {
     private String currentSection = null;
     private boolean waitingForDivision = false;
     private String currentBarOfSection = null;
-    private List<Section> sectionsLibrary = new ArrayList<>();
     private List<Bar> barsLibrary = new ArrayList<>();
+    private List<String> sectionsOrder = new ArrayList<>();
     private int beatPerBar = 0;
     private DrumsElements currentInstrument = null;
     private Map<Integer, Beat> beatsWaitingForDivisionPosition = new HashMap<>();
@@ -32,8 +32,11 @@ public class MusicListener extends RythmMLBaseListener {
     private List<Integer> notesPosition = new ArrayList<>();
 
     public Partition retrieve() {
-        for(final Section section : sectionsLibrary) {
-            this.partition.getSectionLibrary().addSection(section);
+        for (String string : sectionsOrder) {
+            Optional<Section> sectionOptional = this.partition.getSectionLibrary().getSectionWithName(string);
+            if (sectionOptional.isPresent()) {
+                this.partition.getComposition().addSection(new Section(sectionOptional.get()), 1);
+            } else throw new IllegalArgumentException("section not found " + string);
         }
         return this.partition;
     }
@@ -47,7 +50,6 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void exitPartition(RythmMLParser.PartitionContext ctx) {
-        partition.getComposition().setSections(sectionsLibrary);
     }
 
     @Override
@@ -62,7 +64,8 @@ public class MusicListener extends RythmMLBaseListener {
             Section section = new Section();
             section.setBeatPerMinutes(bpm);
             section.setName(composition.getSymbol().getText());
-            sectionsLibrary.add(section);
+            partition.getSectionLibrary().addSection(section);
+            sectionsOrder.add(section.getName());
             System.out.println(composition.getSymbol().getText());
         }
     }
@@ -210,13 +213,20 @@ public class MusicListener extends RythmMLBaseListener {
     public void exitBarOfSection(RythmMLParser.BarOfSectionContext ctx) {
         if (replaceMode) {
             for (Integer barIndex : notesPosition) {
-                getSectionFromLibraryByName(currentSection).replaceBar(getBarFromLibraryByName(currentBarOfSection), barIndex);
+                partition.getSectionLibrary().getSectionWithName(currentSection).ifPresent(section ->
+                        section.replaceBar(getBarFromLibraryByName(currentBarOfSection), barIndex));
             }
         } else {
             Bar emptyBar = new Bar(beatPerBar);
             emptyBar.setName("emptyBar");
-            getSectionFromLibraryByName(currentSection).addBar(emptyBar, notesPosition.get(0) - 1);
-            getSectionFromLibraryByName(currentSection).addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
+            Optional<Section> optionalSection = partition.getSectionLibrary().getSectionWithName(currentSection);
+            if (optionalSection.isPresent()) {
+                Section section = optionalSection.get();
+                if (section.getBars().isEmpty()) {
+                    section.addBar(emptyBar, notesPosition.get(0) - 1);
+                }
+                section.addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
+            }
         }
         currentBarOfSection = null;
         notesPosition = new ArrayList<>();
@@ -235,15 +245,6 @@ public class MusicListener extends RythmMLBaseListener {
             }
         }
         throw new IllegalArgumentException("this bar " + name + " has not been defined before");
-    }
-
-    private Section getSectionFromLibraryByName(String name) {
-        for (Section section : sectionsLibrary) {
-            if (section.getName().equals(name)) {
-                return section;
-            }
-        }
-        throw new IllegalArgumentException("this section " + name + " has not been defined before");
     }
 
 

@@ -2,7 +2,6 @@ package fr.unice.polytech.rythmML.shell.component;
 
 import fr.unice.polytech.rythmML.dsl.Runner;
 import fr.unice.polytech.rythmML.kernel.Partition;
-import fr.unice.polytech.rythmML.kernel.SectionLibrary;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.shell.RythmUtils;
@@ -46,12 +45,11 @@ public class Visualize {
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
 		final Composition composition = new Composition();
-		composition.addSection(section,1);
+		composition.addSection(section, 1);
 		subPartition.setComposition(composition);
-
-		Sequence sequence = subPartition.generateMIDI();
-		File f = new File( WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
-		MidiSystem.write(sequence,1,f);
+		Sequence sequence = subPartition.generateMIDI().getSequence();
+		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp.mid");
+		MidiSystem.write(sequence, 1, f);
 
 		System.out.println(section);
 		OpenBrowser.openBrowser();
@@ -72,7 +70,7 @@ public class Visualize {
 		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
 
 		final Partition partition = antlrRunner.buildModel(stream);
-		Sequence sequence = partition.generateMIDI();
+		Sequence sequence = partition.generateMIDI().getSequence();
 		File f = new File( WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
 		MidiSystem.write(sequence,1,f);
 		OpenBrowser.openBrowser();

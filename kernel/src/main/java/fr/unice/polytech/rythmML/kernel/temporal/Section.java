@@ -21,6 +21,11 @@ public class Section extends NamedElement {
 
     private int beatPerMinutes = 60;
 
+    public Section(Section section) {
+        this.name = section.name;
+        this.beatPerMinutes = section.beatPerMinutes;
+        section.getBars().forEach(bar -> bars.add(new Bar(bar)));
+    }
     public void accept(Visitor v) {
         v.visitSection(this);
     }
