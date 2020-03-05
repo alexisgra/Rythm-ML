@@ -10,11 +10,11 @@ public class SequencerPlayer {
 	private Sequencer sequencer;
 
 	@Async
-	public void playSequence(final Sequence sequence) throws MidiUnavailableException, InvalidMidiDataException {
+	public void playSequence(final Sequence sequence, final int BPM) throws MidiUnavailableException, InvalidMidiDataException {
 		this.sequencer = MidiSystem.getSequencer();
 		this.sequencer.open();
 		this.sequencer.setSequence(sequence);
-		this.sequencer.setTempoInBPM(170);
+		this.sequencer.setTempoInBPM(BPM);
 		this.sequencer.start();
 	}
 

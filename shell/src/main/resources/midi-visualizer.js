@@ -167,7 +167,7 @@ class NoteSequenceDrawing {
 
         for (let i = 0; i < this.noteSequence.notes.length; i++) {
             const note = this.noteSequence.notes[i];
-
+            console.log("NOTE" + note)
             // Size of this note.
             const offset = this.config.noteSpacing * (i + 1);
             const x = (note.startTime * this.config.pixelsPerTimeStep) + offset;

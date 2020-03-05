@@ -26,9 +26,9 @@ public class Workspace {
 		if(file.exists()) {
 			WorkspaceConfig.WORKSPACE = workspace;
 			WorkspaceConfig.DIRECTORY = workspace.substring(0,workspace.lastIndexOf("/"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("index.html").getPath()), new File(WorkspaceConfig.DIRECTORY + "/index.html"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("styles.css").getPath()), new File(WorkspaceConfig.DIRECTORY + "/styles.css"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("midi-visualizer.js").getPath()), new File(WorkspaceConfig.DIRECTORY + "./midi-visualizer.js"));
+			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("index.html").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/index.html"));
+			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("styles.css").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/styles.css"));
+			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("midi-visualizer.js").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/midi-visualizer.js"));
 			return "Workspace loaded.";
 		} else {
 			return "Cannot load workspace, check if the path is ok.";

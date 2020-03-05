@@ -41,12 +41,9 @@ public class Player {
 		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
 
 		final Partition partition = antlrRunner.buildModel(stream);
+		final int BPM = partition.getComposition().getSections().get(0).getBeatPerMinutes();
 		Sequence sequence = partition.generateMIDI();
-		Sequencer sequencer = MidiSystem.getSequencer();
-		sequencer.open();
-		sequencer.setSequence(sequence);
-		//sequencer.setTempoInBPM();
-		sequencer.start();
+		this.player.playSequence(sequence, BPM);
 		return "Playing the song.";
 	}
 
@@ -72,7 +69,7 @@ public class Player {
 		subPartition.setComposition(composition);
 
 		Sequence sequence = subPartition.generateMIDI();
-		this.player.playSequence(sequence);
+		this.player.playSequence(sequence, section.getBeatPerMinutes());
 
 		return "Playing the section " + name;
 	}
