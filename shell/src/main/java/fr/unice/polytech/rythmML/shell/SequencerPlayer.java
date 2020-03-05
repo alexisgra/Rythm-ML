@@ -3,18 +3,15 @@ package fr.unice.polytech.rythmML.shell;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.*;
+import javax.sound.midi.Sequencer;
 
 @Service
 public class SequencerPlayer {
 	private Sequencer sequencer;
 
 	@Async
-	public void playSequence(final Sequence sequence) throws MidiUnavailableException, InvalidMidiDataException {
-		this.sequencer = MidiSystem.getSequencer();
-		this.sequencer.open();
-		this.sequencer.setSequence(sequence);
-		this.sequencer.setTempoInBPM(170);
+	public void playSequence(final Sequencer sequencer) {
+		this.sequencer = sequencer;
 		this.sequencer.start();
 	}
 

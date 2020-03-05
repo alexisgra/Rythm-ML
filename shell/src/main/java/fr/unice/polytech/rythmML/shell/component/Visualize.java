@@ -1,14 +1,11 @@
 package fr.unice.polytech.rythmML.shell.component;
 
-import fr.unice.polytech.rythmML.dsl.Runner;
 import fr.unice.polytech.rythmML.kernel.Partition;
-import fr.unice.polytech.rythmML.kernel.SectionLibrary;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.shell.RythmUtils;
 import fr.unice.polytech.rythmML.shell.WorkspaceConfig;
 import fr.unice.polytech.rythmML.shell.visualizer.OpenBrowser;
-import org.antlr.v4.runtime.CharStream;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -17,7 +14,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -46,12 +42,12 @@ public class Visualize {
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
 		final Composition composition = new Composition();
-		composition.addSection(section,1);
+		composition.addSection(section, 1);
 		subPartition.setComposition(composition);
 
-		Sequence sequence = subPartition.generateMIDI();
-		File f = new File( WorkspaceConfig.DIRECTORY + "/tmp.mid");
-		MidiSystem.write(sequence,1,f);
+		Sequence sequence = subPartition.generateMIDI().getSequence();
+		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp.mid");
+		MidiSystem.write(sequence, 1, f);
 
 		System.out.println(section);
 		OpenBrowser.openBrowser();
