@@ -34,7 +34,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>( |\t)?(on half|on quarter|on third|on beat|in beat|with velocity|with delay) </string>
+          <string>( |\t)?(on half|on quarter|on third|on beat|in beat|with velocity|with delay|by) </string>
           <key>name</key>
           <string>storage.modifier.rythmML</string>
         </dict>
