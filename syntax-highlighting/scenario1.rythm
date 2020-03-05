@@ -1,0 +1,36 @@
+partition JohnnyBGoode
+
+grid {
+    bpm 170
+    bpb 4
+    composition {
+        intro
+        verse1
+        chorus
+        verse2
+        chorus
+    }
+}
+
+bar mainBar {
+    bd on beat 1 3
+    sd on beat 2 4
+    rc in beat 1-4 on half 1-2
+    variation on beat 1 with velocity 70 with delay 23..56
+}
+
+section intro {
+    bar 6-13 mainBar
+}
+
+section verse1 {
+    bar 1-12 mainBar
+}
+
+section chorus {
+    bar 1-12 mainBar
+}
+
+section verse2 {
+    bar 1-12 mainBar
+}

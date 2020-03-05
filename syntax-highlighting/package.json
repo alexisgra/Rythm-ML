@@ -1,0 +1,25 @@
+{
+    "name": "rythm-ml",
+    "displayName": "Rythm ML",
+    "description": "Syntax Highlighting for rythm ml",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.42.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "rythmml",
+            "aliases": ["RythmML", "rythmml"],
+            "extensions": [".rythm"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "rythmml",
+            "scopeName": "source.rythm",
+            "path": "./syntaxes/grammar.tmLanguage"
+        }]
+    }
+}
