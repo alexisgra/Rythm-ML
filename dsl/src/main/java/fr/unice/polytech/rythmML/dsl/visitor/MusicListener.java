@@ -219,8 +219,14 @@ public class MusicListener extends RythmMLBaseListener {
         } else {
             Bar emptyBar = new Bar(beatPerBar);
             emptyBar.setName("emptyBar");
-            partition.getSectionLibrary().getSectionWithName(currentSection).ifPresent(section -> section.addBar(emptyBar, notesPosition.get(0) - 1));
-            partition.getSectionLibrary().getSectionWithName(currentSection).ifPresent(section -> section.addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size()));
+            Optional<Section> optionalSection = partition.getSectionLibrary().getSectionWithName(currentSection);
+            if (optionalSection.isPresent()) {
+                Section section = optionalSection.get();
+                if (section.getBars().isEmpty()) {
+                    section.addBar(emptyBar, notesPosition.get(0) - 1);
+                }
+                section.addBar(getBarFromLibraryByName(currentBarOfSection), notesPosition.size());
+            }
         }
         currentBarOfSection = null;
         notesPosition = new ArrayList<>();

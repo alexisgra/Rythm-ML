@@ -21,8 +21,10 @@ public class Instruments {
 		buffer.append("Rythm ML language provide these instruments...");
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
+		buffer.append("Drum has the following MIDI elements : ");
+		buffer.append(System.lineSeparator());
 		for (final DrumsElements instru : DrumsElements.values()) {
-			buffer.append(instru.displayName);
+			buffer.append("    " + instru.displayName);
 			buffer.append(" - ");
 			buffer.append(instru.description);
 			buffer.append(System.lineSeparator());

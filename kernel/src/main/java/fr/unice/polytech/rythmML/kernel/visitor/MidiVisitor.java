@@ -25,7 +25,7 @@ public class MidiVisitor implements Visitor {
     private Track track;
 
     @Override
-    public Sequence visitPartition(Partition partition) {
+    public Sequencer visitPartition(Partition partition) {
         System.out.println("-------VISITOR--------");
         System.out.println(partition.getName());
         try {
@@ -38,9 +38,8 @@ public class MidiVisitor implements Visitor {
             sequencer.open();
             sequencer.setSequence(this.sequence);
             sequencer.setTempoInBPM(this.currentBPM);
-            sequencer.start();
 
-            return sequence;
+            return sequencer;
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         } catch (MidiUnavailableException e) {

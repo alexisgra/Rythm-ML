@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 
 @Data
 @Accessors(
@@ -25,7 +25,7 @@ public class Partition {
 
     private SectionLibrary sectionLibrary = new SectionLibrary();
 
-    public Sequence generateMIDI() {
+    public Sequencer generateMIDI() {
         MidiVisitor midiVisitor = new MidiVisitor();
         return midiVisitor.visitPartition(this);
     }

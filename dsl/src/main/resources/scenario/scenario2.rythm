@@ -1,0 +1,57 @@
+partition BillieJean
+
+grid {
+    bpm 120
+    bpb 4
+    composition {
+        intro
+        verse1
+        bridge
+    }
+}
+
+bar mainBar {
+    bd on beat 1 3
+    sd on beat 2 4
+    ch in beat 1-4 on half 1-2
+}
+
+bar modifiedBar {
+    bd on beat 1 3
+    sd on beat 2 4
+    ch on beat 4
+    ch in beat 1-3 on half 1-2
+    oh in beat 4 on half 2
+}
+
+bar modifiedBarBis {
+    bd on beat 1 3
+    sd on beat 2 4
+    ch on beat 2 4
+    ch in beat 1 3 on half 1-2
+    oh in beat 2 4 on half 2
+}
+
+bar endBridge {
+    bd in beat 1-4 on half 1-2
+    sd on beat 2 4
+    ch on beat 1-4
+    ch in beat 1 3 on half 2
+    oh in beat 2 4 on half 2
+}
+
+section intro {
+    bar 2-15 mainBar
+}
+
+section verse1 {
+    bar 1-19 mainBar
+    bar 20 modifiedBar
+}
+
+section bridge {
+    bar 1-6 mainBar
+    replace bar 2 4 6 modifiedBar
+    bar 7 modifiedBarBis
+    bar 8 endBridge
+}

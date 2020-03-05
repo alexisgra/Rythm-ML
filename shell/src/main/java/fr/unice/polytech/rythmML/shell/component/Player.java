@@ -2,20 +2,19 @@ package fr.unice.polytech.rythmML.shell.component;
 
 import fr.unice.polytech.rythmML.dsl.Runner;
 import fr.unice.polytech.rythmML.kernel.Partition;
-import fr.unice.polytech.rythmML.kernel.data.DrumsElements;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.shell.RythmUtils;
 import fr.unice.polytech.rythmML.shell.SequencerPlayer;
 import fr.unice.polytech.rythmML.shell.WorkspaceConfig;
-import fr.unice.polytech.rythmML.shell.visualizer.OpenBrowser;
 import org.antlr.v4.runtime.CharStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
-import javax.sound.midi.*;
-import java.io.File;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequencer;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -41,12 +40,9 @@ public class Player {
 		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
 
 		final Partition partition = antlrRunner.buildModel(stream);
-		Sequence sequence = partition.generateMIDI();
-		Sequencer sequencer = MidiSystem.getSequencer();
-		sequencer.open();
-		sequencer.setSequence(sequence);
-		//sequencer.setTempoInBPM();
-		sequencer.start();
+		Sequencer sequencer = partition.generateMIDI();
+		this.player.playSequence(sequencer);
+
 		return "Playing the song.";
 	}
 
@@ -68,11 +64,11 @@ public class Player {
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
 		final Composition composition = new Composition();
-		composition.addSection(section,1);
+		composition.addSection(section, 1);
 		subPartition.setComposition(composition);
 
-		Sequence sequence = subPartition.generateMIDI();
-		this.player.playSequence(sequence);
+		Sequencer sequencer = subPartition.generateMIDI();
+		this.player.playSequence(sequencer);
 
 		return "Playing the section " + name;
 	}

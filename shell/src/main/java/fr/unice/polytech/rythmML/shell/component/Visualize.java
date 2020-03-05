@@ -2,7 +2,6 @@ package fr.unice.polytech.rythmML.shell.component;
 
 import fr.unice.polytech.rythmML.dsl.Runner;
 import fr.unice.polytech.rythmML.kernel.Partition;
-import fr.unice.polytech.rythmML.kernel.SectionLibrary;
 import fr.unice.polytech.rythmML.kernel.temporal.Composition;
 import fr.unice.polytech.rythmML.kernel.temporal.Section;
 import fr.unice.polytech.rythmML.shell.RythmUtils;
@@ -27,12 +26,12 @@ import java.util.Optional;
 public class Visualize {
 
 	/**
-	 * The visualize command diplay graphic version of the midi file
+	 * The visualize command display graphic version of a section of the midi file
 	 *
 	 * @return
 	 */
-	@ShellMethod(value = "Displays visual version of the generated midi file.", key = "visu sections")
-	public String visualize(@ShellOption(defaultValue="") final String name) throws IOException {
+	@ShellMethod(value = "Displays visual version of a section of the generated midi file.", key = "visu section")
+	public String visualizeSection(@ShellOption(defaultValue="") final String name) throws IOException {
 		if (WorkspaceConfig.WORKSPACE == null) {
 			return "Please setup your workspace first.";
 		}
@@ -46,16 +45,36 @@ public class Visualize {
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
 		final Composition composition = new Composition();
-		composition.addSection(section,1);
+		composition.addSection(section, 1);
 		subPartition.setComposition(composition);
-
-		Sequence sequence = subPartition.generateMIDI();
-		File f = new File( WorkspaceConfig.DIRECTORY + "/tmp.mid");
-		MidiSystem.write(sequence,1,f);
+		Sequence sequence = subPartition.generateMIDI().getSequence();
+		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp.mid");
+		MidiSystem.write(sequence, 1, f);
 
 		System.out.println(section);
 		OpenBrowser.openBrowser();
-		return "";
+		return "Opening browser...";
+	}
+
+	/**
+	 * The visualize command diplay graphic version of the midi file
+	 *
+	 * @return
+	 */
+	@ShellMethod(value = "Displays visual version of the generated midi file.", key = "visu")
+	public String visualize() throws IOException {
+		if (WorkspaceConfig.WORKSPACE == null) {
+			return "Please setup your workspace first.";
+		}
+		final Runner antlrRunner = new Runner();
+		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
+
+		final Partition partition = antlrRunner.buildModel(stream);
+		Sequence sequence = partition.generateMIDI().getSequence();
+		File f = new File( WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
+		MidiSystem.write(sequence,1,f);
+		OpenBrowser.openBrowser();
+		return "Opening browser...";
 	}
 
 }
