@@ -13,7 +13,7 @@ public class TemporalUtils {
         pos += beat * MIDI_RESOLUTION;
         pos += division * MIDI_RESOLUTION;
         pos += (delay / msPerSecond);
-        System.out.println("TICK : " + pos);
+//        System.out.println("TICK : " + pos);
         return pos;
     }
 }

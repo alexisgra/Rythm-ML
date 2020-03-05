@@ -43,8 +43,8 @@ public class MusicListener extends RythmMLBaseListener {
 
     @Override
     public void enterPartition(RythmMLParser.PartitionContext ctx) {
-        System.out.println("-------LISTENER--------");
-        System.out.println(String.format("partition %s", ctx.name.getText()));
+//        System.out.println("-------LISTENER--------");
+//        System.out.println(String.format("partition %s", ctx.name.getText()));
         partition = new Partition(ctx.name.getText());
     }
 
@@ -57,16 +57,16 @@ public class MusicListener extends RythmMLBaseListener {
         int bpm = Integer.parseInt(ctx.bpmNumber.getText());
         this.beatPerBar = Integer.parseInt(ctx.beatPerBar.getText());
         List<TerminalNode> compositions = ctx.IDENTIFIER();
-        System.out.println(String.format("bpm %s", bpm));
-        System.out.println(String.format("beatPerBar %s", beatPerBar));
-        System.out.println("composition");
+//        System.out.println(String.format("bpm %s", bpm));
+//        System.out.println(String.format("beatPerBar %s", beatPerBar));
+//        System.out.println("composition");
         for (TerminalNode composition : compositions) {
             Section section = new Section();
             section.setBeatPerMinutes(bpm);
             section.setName(composition.getSymbol().getText());
             partition.getSectionLibrary().addSection(section);
             sectionsOrder.add(section.getName());
-            System.out.println(composition.getSymbol().getText());
+//            System.out.println(composition.getSymbol().getText());
         }
     }
 
@@ -75,7 +75,7 @@ public class MusicListener extends RythmMLBaseListener {
         currentBar = new Bar(this.beatPerBar);
         currentBar.setName(ctx.barName.getText());
         this.barsLibrary.add(currentBar);
-        System.out.println(String.format("bar %s", ctx.barName.getText()));
+//        System.out.println(String.format("bar %s", ctx.barName.getText()));
     }
 
     @Override
@@ -85,13 +85,13 @@ public class MusicListener extends RythmMLBaseListener {
         if (instrument == null) {
             throw new IllegalArgumentException(String.format("The given instrument %s doesn't exist", ctx.instrument.getText()));
         }
-        System.out.println(String.format("instrument %s", instrument.displayName));
+//        System.out.println(String.format("instrument %s", instrument.displayName));
         currentInstrument = instrument;
     }
 
     @Override
     public void enterDivisionInit(RythmMLParser.DivisionInitContext ctx) {
-        System.out.println(ctx.division.getText());
+//        System.out.println(ctx.division.getText());
         divisionEnum = DivisionEnum.lookupByDisplayName(ctx.division.getText());
         for (Integer placement : notesPosition) {
             //on partition : placement is 1-8 in computer science : array starts at 0, so the real placement begins at 0 and not 1
@@ -198,7 +198,7 @@ public class MusicListener extends RythmMLBaseListener {
     public void enterSection(RythmMLParser.SectionContext ctx) {
         String sectionName = ctx.sectionName.getText();
         currentSection = sectionName;
-        System.out.println(String.format("section %s", sectionName));
+//        System.out.println(String.format("section %s", sectionName));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class MusicListener extends RythmMLBaseListener {
         replaceMode = ctx.replace != null;
         String barName = ctx.barName.getText();
         currentBarOfSection = barName;
-        System.out.println(String.format("barName %s", barName));
+//        System.out.println(String.format("barName %s", barName));
     }
 
     @Override
