@@ -48,7 +48,7 @@ public class Visualize {
 		composition.addSection(section, 1);
 		subPartition.setComposition(composition);
 		Sequence sequence = subPartition.generateMIDI().getSequence();
-		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp.mid");
+		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
 		MidiSystem.write(sequence, 1, f);
 
 		System.out.println(section);

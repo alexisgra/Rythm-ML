@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.logging.LogManager;
+
 @SpringBootApplication
 @EnableAsync
 public class RythmMlShellApplication {

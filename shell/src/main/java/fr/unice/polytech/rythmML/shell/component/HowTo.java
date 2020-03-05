@@ -49,7 +49,7 @@ public class HowTo {
 		buffer.append(System.lineSeparator());
 		buffer.append(HowToText.HOW_TO_BAR);
 		buffer.append(System.lineSeparator());
-		buffer.append("You can use the following keyword to place note : 'half', 'tiers', 'quarter' et 'eight'");
+		buffer.append("You can use the following keyword to place note : 'half', 'tiers', 'quarter' or 'eight'");
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
@@ -68,15 +68,22 @@ public class HowTo {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("To place a note in RythmML you need :");
 		buffer.append(System.lineSeparator());
-		buffer.append("1 - Choose the instruments and an associated element (eg: bd). (To view all instruments and their elements run the command : instruments");
+		buffer.append("	1 - Choose the instruments and an associated element (eg: bd). (To view all instruments and their elements run the command : instruments");
 		buffer.append(System.lineSeparator());
-		buffer.append("2 - Indicate if the note is on the beat : 'bd on beat' or in a beat division : 'bd in beat'");
 		buffer.append(System.lineSeparator());
-		buffer.append("3 - Specify the beat number : '1' , or several beats : '1 3 5' or a beat interval : '1-5'");
+		buffer.append("	2 - Indicate if the note is on the beat : 'bd on beat' or in a beat division : 'bd in beat'");
 		buffer.append(System.lineSeparator());
-		buffer.append("4 - If you choose a beat division");
 		buffer.append(System.lineSeparator());
-		buffer.append("You can use the following division keyword to place note : 'half', 'tiers', 'quarter' et 'eight'");
+		buffer.append("	3 - Specify the beat number : '1' , or several beats : '1 3 5' or a beat interval : '1-5'");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("	4 - If you choose a beat division");
+		buffer.append(System.lineSeparator());
+		buffer.append("	You can use the following division keyword to place note : 'half', 'tiers', 'quarter' or 'eight'");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("	5 - Specify the division number : '1' , or several division : '1 3 5' or a division interval : '1-5'");
+		buffer.append(System.lineSeparator());
 		return buffer.toString();
 	}
 }
