@@ -20,7 +20,7 @@ bar mainBar {
 }
 
 section intro {
-    bar 6-13 mainBar
+    bar 2-13 mainBar
 }
 
 section verse1 {
