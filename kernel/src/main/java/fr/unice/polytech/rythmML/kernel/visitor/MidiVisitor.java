@@ -26,8 +26,8 @@ public class MidiVisitor implements Visitor {
 
     @Override
     public Sequencer visitPartition(Partition partition) {
-        System.out.println("-------VISITOR--------");
-        System.out.println(partition.getName());
+//        System.out.println("-------VISITOR--------");
+//        System.out.println(partition.getName());
         try {
             this.sequence = new Sequence(Sequence.PPQ, MIDI_RESOLUTION);
             this.track = sequence.createTrack();
