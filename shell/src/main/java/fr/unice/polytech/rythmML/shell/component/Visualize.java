@@ -53,7 +53,7 @@ public class Visualize {
 		File f = new File(WorkspaceConfig.DIRECTORY + "/tmp/tmp.mid");
 		MidiSystem.write(sequence, 1, f);
 
-		System.out.println(section);
+		//System.out.println(section);
 		OpenBrowser.openBrowser();
 		return "Opening browser...";
 	}
