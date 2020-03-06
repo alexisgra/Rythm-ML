@@ -20,7 +20,7 @@ public class HowToText {
 			"}";
 
 	public static String HOW_TO_BAR = "bar BAR_NAME {\n" +
-			"    MIDI_ELEMENT on beat BEAT_PLACEMENT\n" +
-			"    MIDI_ELEMENT in beat BEAT_PLACEMENT on half DIVISION_PLACEMENT\n" +
+			"    NOTE_PLACEMENT \n" +
+			"    NOTE_PLACEMENT \n" +
 			"}";
 }

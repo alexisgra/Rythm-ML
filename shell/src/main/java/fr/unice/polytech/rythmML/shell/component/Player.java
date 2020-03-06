@@ -35,7 +35,7 @@ public class Player {
 	@ShellMethod(value = "Play the song described in the workfile.", key = "play")
 	public String play() throws IOException, MidiUnavailableException, InvalidMidiDataException {
 		if (WorkspaceConfig.WORKSPACE == null) {
-			return "Please setup your workspace first.";
+			return "Please setup your workfile first.";
 		}
 		final Runner antlrRunner = new Runner();
 		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
@@ -53,14 +53,14 @@ public class Player {
 	@ShellMethod(value = "Play the song described in the workfile.", key = "play section")
 	public String play(@ShellOption(help = "section_name") String name) throws IOException, MidiUnavailableException, InvalidMidiDataException {
 		if (WorkspaceConfig.WORKSPACE == null) {
-			return "Please setup your workspace first.";
+			return "Please setup your workfile first.";
 		}
 		if(name.equals("")) {
 			// Return a list of all sections
 		}
 		final Optional<Section> sectionOpt = RythmUtils.getSectionFromRythm(name);
 		if (!sectionOpt.isPresent()) {
-			return "Section doesn't exist in the workspace.";
+			return "Section doesn't exist in the workfile.";
 		}
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
@@ -80,7 +80,7 @@ public class Player {
 	@ShellMethod(value = "Play the song described in the workfile.", key = "stop")
 	public String stop() throws IOException, MidiUnavailableException, InvalidMidiDataException {
 		if (WorkspaceConfig.WORKSPACE == null) {
-			return "Please setup your workspace first.";
+			return "Please setup your workfile first.";
 		}
 		this.player.stopSequence();
 		return "Stopping the player";

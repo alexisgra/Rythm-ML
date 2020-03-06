@@ -6,16 +6,12 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 /**
- * Commands that relies on rythm ml language.
+ * Commands that relies on rythm ML language.
  */
 @ShellComponent
 public class HowTo {
 
-	/**
-	 * The instruments command diplay all available instruments in Rythm ML.
-	 *
-	 * @return the list of instruments
-	 */
+
 	@ShellMethod("Displays how to use Rythm ML.")
 	public String howto() {
 		final StringBuffer buffer = new StringBuffer();
@@ -49,13 +45,13 @@ public class HowTo {
 		buffer.append(System.lineSeparator());
 		buffer.append(HowToText.HOW_TO_BAR);
 		buffer.append(System.lineSeparator());
-		buffer.append("You can use the following keyword to place note : 'half', 'tiers', 'quarter' or 'eight'");
-		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append("If you want to learn more about the note placement, you can run the command : howto placement");
 		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
 		buffer.append("If you want to learn more about the note variation syntax, you can run the command : howto variation");
+		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append("If you want to learn more about the bar replacement syntax, you can run the command : howto replace");
 		buffer.append(System.lineSeparator());
@@ -68,7 +64,7 @@ public class HowTo {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("To place a note in RythmML you need :");
 		buffer.append(System.lineSeparator());
-		buffer.append("	1 - Choose the instruments and an associated element (eg: bd). (To view all instruments and their elements run the command : instruments");
+		buffer.append("	1 - Choose the instruments (MIDI_ELEMENTS) and an associated element (eg: bd). (To view all instruments and their elements run the command : instruments");
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append("	2 - Indicate if the note is on the beat : 'bd on beat' or in a beat division : 'bd in beat'");
@@ -84,6 +80,13 @@ public class HowTo {
 		buffer.append(System.lineSeparator());
 		buffer.append("	5 - Specify the division number : '1' , or several division : '1 3 5' or a division interval : '1-5'");
 		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("	Example : ");
+		buffer.append(System.lineSeparator());
+		buffer.append("		bd on beat 1 4");
+		buffer.append(System.lineSeparator());
+		buffer.append("		cc in beat 1 4 on quarter 2 4");
+
 		return buffer.toString();
 	}
 
@@ -115,6 +118,15 @@ public class HowTo {
 		buffer.append(System.lineSeparator());
 		buffer.append(System.lineSeparator());
 		buffer.append("The BAR_NUMBER can be like : 1 2 3 for bar 1,2 and 3 or 1-3 for all bars between 1 and 3.");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("The OTHER_BAR is the name of the bar that will replace the old one.");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("	Example : ");
+		buffer.append(System.lineSeparator());
+		buffer.append("		replace bar 1 3 5 newVerseBar");
+		buffer.append(System.lineSeparator());
 		return buffer.toString();
 	}
 }

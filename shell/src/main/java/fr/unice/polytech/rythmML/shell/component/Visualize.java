@@ -8,6 +8,8 @@ import fr.unice.polytech.rythmML.shell.RythmUtils;
 import fr.unice.polytech.rythmML.shell.WorkspaceConfig;
 import fr.unice.polytech.rythmML.shell.visualizer.OpenBrowser;
 import org.antlr.v4.runtime.CharStream;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -30,17 +32,17 @@ public class Visualize {
 	 *
 	 * @return
 	 */
-	@ShellMethod(value = "Displays visual version of a section of the generated midi file.", key = "visu section")
+	@ShellMethod(value = "argument : SECTION_NAME - Displays visual version of a section of the generated midi file.", key = "visu section")
 	public String visualizeSection(@ShellOption(help = "name") final String name) throws IOException {
 		if (WorkspaceConfig.WORKSPACE == null) {
-			return "Please setup your workspace first.";
+			return "Please setup your workfile first.";
 		}
 		if(name.equals("")) {
 			// Return a list of all sections
 		}
 		final Optional<Section> sectionOpt = RythmUtils.getSectionFromRythm(name);
 		if (!sectionOpt.isPresent()) {
-			return "Section doesn't exist in the workspace.";
+			return "Section doesn't exist in the workfile.";
 		}
 		final Section section = sectionOpt.get();
 		final Partition subPartition = new Partition("sub");
@@ -64,7 +66,7 @@ public class Visualize {
 	@ShellMethod(value = "Displays visual version of the generated midi file.", key = "visu")
 	public String visualize() throws IOException {
 		if (WorkspaceConfig.WORKSPACE == null) {
-			return "Please setup your workspace first.";
+			return "Please setup your workfile first.";
 		}
 		final Runner antlrRunner = new Runner();
 		CharStream stream = antlrRunner.getCharStream(Paths.get(WorkspaceConfig.WORKSPACE));
