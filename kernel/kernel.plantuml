@@ -9,6 +9,9 @@ Interface VisitableElement{
 
 class Partition {
 }
+class SectionLibrary {
+
+}
 
 ' Tracks
 class Note {
@@ -18,6 +21,7 @@ class Note {
 class Composition {
 }
 class Section {
+int beatPerMinutes
 }
 class Bar {
 }
@@ -36,14 +40,17 @@ enum DrumsElements {
 ' All attributes
 
 Partition "1" *--> "1" Composition : composition
-
+Partition "1" *--> "1" SectionLibrary : sectionLibrary
+SectionLibrary "1" ---> "*" Section
 
 ' Grid
 Composition "1" --> "*" Section : sections
 Section "1" --> "*" Bar : bars
 Bar "1" --> "*" Beat : beats
 Beat "1" --> "*" Division : divisions
-Beat "*" --> "*" Note : musicNote
-Division "*" --> "*" Note : musicNote
+Beat "*" --> "*" Note : notes
+Division "*" *-> "*" Division : divisions
+Division "*" --> "*" Note : notes
+Note "1" --> "1" DrumsElements : drumElement
 
 @enduml
