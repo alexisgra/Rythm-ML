@@ -8,7 +8,7 @@ public enum DrumsElements {
 	SNARE_DRUM("sd", "snare drum", 38),
 	CLOSED_HITHAT("ch", "closed hihat", 42),
 	OPENED_HITHAT("oh", "opened hihat", 46),
-	CRASH_SYMBAL("cc", "crash cymbal", 49),
+	CRASH_CYMBAL("cc", "crash cymbal", 49),
 	RIDE_CYMBAL("rc", "ride cymbal", 51);
 
 
