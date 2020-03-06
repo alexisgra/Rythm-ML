@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -50,7 +51,7 @@ public class Player {
 	 * The play command will play the song described by the user.
 	 */
 	@ShellMethod(value = "Play the song described in the workfile.", key = "play section")
-	public String play(String name) throws IOException, MidiUnavailableException, InvalidMidiDataException {
+	public String play(@ShellOption(help = "section_name") String name) throws IOException, MidiUnavailableException, InvalidMidiDataException {
 		if (WorkspaceConfig.WORKSPACE == null) {
 			return "Please setup your workspace first.";
 		}

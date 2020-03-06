@@ -86,4 +86,35 @@ public class HowTo {
 		buffer.append(System.lineSeparator());
 		return buffer.toString();
 	}
+
+	@ShellMethod(value = "Displays how to use Rythm ML variation.", key = "howto variation")
+	public String howtoVariation() {
+		final StringBuffer buffer = new StringBuffer();
+		buffer.append("To declare a note variation in RythmML you need to write something like this :");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("variation on beat BEAT_NUMBER with velocity VELOCITY_NUMBER with delay DELAY_NUMBER");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("Velocity is between 1 and 100");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("Delay is expressed in milliseconds, you can give a number or an interval such as : 1..5");
+		buffer.append(System.lineSeparator());
+		buffer.append("The interval will generate a random value in between the two given number");
+		return buffer.toString();
+	}
+
+	@ShellMethod(value = "Displays how to use Rythm ML replace.", key = "howto replace")
+	public String howtoReplace() {
+		final StringBuffer buffer = new StringBuffer();
+		buffer.append("To use the replace mecanism, you need to write somethong like this in a section : ");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("replace bar BAR_NUMBER OTHER_BAR");
+		buffer.append(System.lineSeparator());
+		buffer.append(System.lineSeparator());
+		buffer.append("The BAR_NUMBER can be like : 1 2 3 for bar 1,2 and 3 or 1-3 for all bars between 1 and 3.");
+		return buffer.toString();
+	}
 }

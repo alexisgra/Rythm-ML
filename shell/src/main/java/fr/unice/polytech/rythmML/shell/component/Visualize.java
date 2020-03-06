@@ -31,7 +31,7 @@ public class Visualize {
 	 * @return
 	 */
 	@ShellMethod(value = "Displays visual version of a section of the generated midi file.", key = "visu section")
-	public String visualizeSection(@ShellOption(defaultValue="") final String name) throws IOException {
+	public String visualizeSection(@ShellOption(help = "name") final String name) throws IOException {
 		if (WorkspaceConfig.WORKSPACE == null) {
 			return "Please setup your workspace first.";
 		}

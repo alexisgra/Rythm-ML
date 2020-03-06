@@ -9,6 +9,7 @@ import org.springframework.shell.standard.ShellMethod;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Commands that relies on rythm ml instruments.
@@ -20,15 +21,17 @@ public class Workspace {
 	 * Setup the workspace.
 	 *
 	 */
-	@ShellMethod("Setup the workspace")
-	public String workspace(final String workspace) throws IOException {
+	@ShellMethod(value = "Setup the workfile (ie. the partition written in rythmML", key = "workfile")
+	public String workspace(final String workspace) throws IOException, URISyntaxException {
 		File file = new File(workspace);
 		if(file.exists()) {
 			WorkspaceConfig.WORKSPACE = workspace;
 			WorkspaceConfig.DIRECTORY = workspace.substring(0,workspace.lastIndexOf("/"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("index.html").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/index.html"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("styles.css").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/styles.css"));
-			FileUtils.copyFile(new File(Workspace.class.getClassLoader().getResource("midi-visualizer.js").getPath()), new File(WorkspaceConfig.DIRECTORY + "/tmp/midi-visualizer.js"));
+			File tmp = new File(WorkspaceConfig.DIRECTORY+"/tmp");
+			tmp.mkdirs();
+			FileUtils.copyInputStreamToFile(Workspace.class.getClassLoader().getResourceAsStream("index.html"), new File(WorkspaceConfig.DIRECTORY + "/tmp/index.html"));
+			FileUtils.copyInputStreamToFile(Workspace.class.getClassLoader().getResourceAsStream("styles.css"), new File(WorkspaceConfig.DIRECTORY + "/tmp/styles.css"));
+			FileUtils.copyInputStreamToFile(Workspace.class.getClassLoader().getResourceAsStream("midi-visualizer.js"), new File(WorkspaceConfig.DIRECTORY + "/tmp/midi-visualizer.js"));
 			return "Workspace loaded.";
 		} else {
 			return "Cannot load workspace, check if the path is ok.";
