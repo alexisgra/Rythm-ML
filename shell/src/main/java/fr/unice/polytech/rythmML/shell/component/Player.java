@@ -51,7 +51,7 @@ public class Player {
 	 * The play command will play the song described by the user.
 	 */
 	@ShellMethod(value = "Play the song described in the workfile.", key = "play section")
-	public String play(@ShellOption(help = "section_name") String name) throws IOException, MidiUnavailableException, InvalidMidiDataException {
+	public String play(@ShellOption(help = "name") String name) throws IOException, MidiUnavailableException, InvalidMidiDataException {
 		if (WorkspaceConfig.WORKSPACE == null) {
 			return "Please setup your workfile first.";
 		}

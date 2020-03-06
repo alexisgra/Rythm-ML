@@ -23,6 +23,9 @@ public class Workfile {
 	 */
 	@ShellMethod(value = "argument : FILE_RELATIVE_PATH - Setup the workfile (ie. the partition written in rythmML)", key = "workfile")
 	public String workspace(@ShellOption(help = "FILE_RELATIVE_PATH") final String workfile) throws IOException, URISyntaxException {
+		if(!workfile.contains("/")) {
+			return "The workfile path is incorrect. Try to add ./ in the path.";
+		}
 		File file = new File(workfile);
 		if(file.exists()) {
 			WorkspaceConfig.WORKSPACE = workfile;
