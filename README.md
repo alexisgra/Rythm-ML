@@ -13,6 +13,9 @@ Rythm-ML is a tool for creating rhythm using a DSL.
 java -jar rythmML.jar
 ```
 
+There are some example files of scenario [here](dsl/src/main/resources/scenario)
+using the DSL.
+
 ## Visual Studio Code - Syntax Highlighting
 
 There is Visual Studio Code Plugin for syntax highlighting. See the [README](syntax-highlighting/README.md) 
