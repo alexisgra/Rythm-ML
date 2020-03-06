@@ -23,7 +23,7 @@ public class Runner {
     }
 
     public CharStream getCharStream(Path input) throws IOException {
-        System.out.println("Using input file: " + input);
+//        System.out.println("Using input file: " + input);
         return CharStreams.fromPath(input);
     }
 
